@@ -1,9 +1,16 @@
 import React, { useState } from "react";
 import RegistrationIMG from "../../assets/Registration.png";
+import { ToastContainer, toast, Bounce } from "react-toastify";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 
 const Registration = () => {
+  const auth = getAuth();
   const HandleSubmit = (event) => {
     event.preventDefault();
   };
@@ -11,6 +18,7 @@ const Registration = () => {
   const [FullName, setFullName] = useState("");
   const [Password, setPassword] = useState("");
   const [Eye, setEye] = useState(false);
+  const [loading, setloading] = useState(false);
 
   // Error consept=================
   const [EmailErr, setEmailErr] = useState("");
@@ -20,21 +28,29 @@ const Registration = () => {
   // Regex =========================
 
   const EmailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-  const PasswordRegex =
-    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+  const PasswordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
 
   // Regex =========================
   // handleEmail factionality
   const HandleEmail = (event) => {
     setEmail(event.target.value);
+    if (EmailErr) {
+      setEmailErr("");
+    }
   };
   // handleName factionality
   const HandleName = (event) => {
     setFullName(event.target.value);
+    if (NameErr) {
+      setNameErr("");
+    }
   };
-  // handlePass factionality
   const HandlePass = (event) => {
     setPassword(event.target.value);
+    if (PAssErr) {
+      setPAssErr("");
+    }
   };
   // eye fucntonality
   const HandleEye = () => {
@@ -58,13 +74,55 @@ const Registration = () => {
       setNameErr("");
       setPAssErr("Password formate invalid");
     } else {
+      setloading(true);
       setPAssErr("");
-      alert("Okay");
+      setEmail("");
+      setFullName("");
+      setPassword("");
+      // Signup new user
+      createUserWithEmailAndPassword(auth, Email, Password)
+        .then((userCredential) => {
+          setloading(false);
+          sendEmailVerification(auth.currentUser).then(() => {
+            toast.success("🦄 Please Check your Email", {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              transition: Bounce,
+            });
+          });
+        })
+        .catch((error) => {
+          setloading(false);
+          console.log(error);
+          if (error.message.includes("email-already-in-use")) {
+            toast.error("🦄 Email already Registared, Try another Email", {
+              position: "top-left",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              transition: Bounce,
+              style: { width: "25vw" },
+            });
+          } else {
+            console.log(error.message);
+          }
+        });
     }
   };
 
   return (
     <>
+      <ToastContainer />
       <div className="flex">
         <div className="w-1/2 h-screen flex items-center justify-center">
           <div className="">
@@ -93,6 +151,7 @@ const Registration = () => {
                   type="email"
                   placeholder="Enter Your Email"
                   id="Email"
+                  value={Email}
                   autoComplete="off"
                   className="py-[26px] w-3/4 rounded-lg px-6 border-4 border-[rgba(17,23,93,0.45)] "
                   onChange={HandleEmail}
@@ -114,9 +173,13 @@ const Registration = () => {
                   type="text"
                   placeholder="Enter Your Full Name "
                   id="fulname"
+                  value={FullName}
                   autoComplete="off"
                   className="py-[26px] w-3/4 rounded-lg px-6 border-4 border-[rgba(17,23,93,0.45)]  "
                   onChange={HandleName}
+                  // onChange={(event) => {
+                  //   event.target.value;
+                  // }} evabe dile function use korte parbona.
                 />
                 {NameErr && (
                   <span className="text-red-600 block mt-2 ml-1">
@@ -135,6 +198,7 @@ const Registration = () => {
                   type={Eye ? "text" : "password"}
                   placeholder="123456789@#$skhjgHJG"
                   id="Password"
+                  value={Password}
                   autoComplete="off"
                   className="py-[26px] w-3/4 rounded-lg px-6 border-4 border-[rgba(17,23,93,0.45)] "
                   onChange={HandlePass}
@@ -152,9 +216,15 @@ const Registration = () => {
                 </div>
               </div>
               <button
-                className=" py-4 w-3/4 rounded-full bg-ThemeColor text-white font-semibold mt-6 font-xl"
+                className=" py-4 w-3/4 rounded-full bg-ThemeColor text-white font-semibold mt-6 font-xl relative "
                 onClick={HandleSignUp}
               >
+                {loading && (
+                  <svg
+                    class=" animate-spin h-5 w-5 mr-3 ... absolute top-[35%] left-[30%] border-4 rounded-full border-t-red-200 border-b-red-600"
+                    viewBox="0 0 24 24"
+                  ></svg>
+                )}
                 Sign up
               </button>
             </form>
