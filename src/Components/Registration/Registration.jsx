@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import RegistrationIMG from "../../assets/Registration.png";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { FaEye } from "react-icons/fa";
+import { Link } from "react-router-dom";
 import { FaEyeSlash } from "react-icons/fa";
 import {
   getAuth,
@@ -124,7 +125,7 @@ const Registration = () => {
     <>
       <ToastContainer />
       <div className="flex">
-        <div className="w-1/2 h-screen flex items-center justify-center">
+        <div className="w-1/2 flex items-center justify-center">
           <div className="">
             <h2 className="font-Nunito font-bold text-[34px] text-[#11175D] pb-2.5">
               Get started with easily register
@@ -231,7 +232,9 @@ const Registration = () => {
             <div className="text-center w-3/4 mt-[35px] font-OpenSans font-[13px]">
               <p className="">
                 Already have an account ?{" "}
-                <span className="text-[#EA6C00] font-bold">Sign In</span>
+                <span className="text-[#EA6C00] font-bold">
+                  <Link to={"login"}>Sign In</Link>
+                </span>
               </p>
             </div>
           </div>
