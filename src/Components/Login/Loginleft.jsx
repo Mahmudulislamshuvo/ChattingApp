@@ -2,12 +2,20 @@ import React, { useState } from "react";
 import { FcGoogle } from "react-icons/fc";
 import { FaEye } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  GoogleAuthProvider,
+  signInWithPopup,
+} from "firebase/auth";
 import Loading from "../CommonCompo/Loading.jsx";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const Loginleft = () => {
   const auth = getAuth();
+  const provider = new GoogleAuthProvider();
+  const navigate = useNavigate();
+
   const HandleSubmit = (event) => {
     event.preventDefault();
   };
@@ -73,11 +81,15 @@ const Loginleft = () => {
       });
     } else {
       setLoadd(true);
-      alert("All Okay");
       signInWithEmailAndPassword(auth, inputvalue.Email, inputvalue.Password)
         .then((userCredential) => {
           // Signed in
-          const user = userCredential.user;
+          const user = userCredential._tokenResponse.idToken;
+          localStorage.setItem(
+            "User Token",
+            userCredential._tokenResponse.idToken
+          );
+          navigate("/home");
         })
         .catch((error) => {
           const errorMessage = error;
@@ -88,6 +100,30 @@ const Loginleft = () => {
     }
   };
 
+  // google login
+  const HandleLoginGoogle = () => {
+    signInWithPopup(auth, provider)
+      .then((result) => {
+        const credential = GoogleAuthProvider.credentialFromResult(result);
+        const token = credential.accessToken;
+        const user = result.user;
+        localStorage.setItem("User Token", token);
+
+        if (user) {
+          navigate("/home");
+          console.log(user);
+        }
+      })
+      .catch((error) => {
+        const errorCode = error.code;
+        const errorMessage = error.message;
+        const email = error.customData.email;
+        const credential = GoogleAuthProvider.credentialFromError(error);
+        console.error("Google Sign-In Error:", errorCode, errorMessage, email);
+        alert(`Sign-in failed: ${errorMessage}`);
+      });
+  };
+
   return (
     <div className="flex w-[55%] justify-center items-center">
       <div>
@@ -96,7 +132,10 @@ const Loginleft = () => {
             Login to your account!
           </h1>
         </div>
-        <div className="max-w-[230px] rounded-lg border-[1px] border-[rgba(3,1,76,0.31)] flex py-[18px] pr-10 pl-[24px] items-center">
+        <div
+          className="max-w-[235px] rounded-lg border-[1px] border-[rgba(3,1,76,0.31)] flex py-[18px] pr-10 pl-[24px] items-center cursor-pointer"
+          onClick={HandleLoginGoogle}
+        >
           <FcGoogle className="text-md" />
           <h4 className="pl-2.5 font-OpenSans font-semibold">
             Login with Google
@@ -174,7 +213,7 @@ const Loginleft = () => {
               <p className="">
                 Don’t have an account ?
                 <span className="text-[#EA6C00] font-bold pl-1">
-                  <Link to={"/"}>Sign In</Link>
+                  <Link to={"/"}>Sign Up</Link>
                 </span>
               </p>
             </div>

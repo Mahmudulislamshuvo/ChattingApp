@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import RegistrationIMG from "../../assets/Registration.png";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { FaEye } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { FaEyeSlash } from "react-icons/fa";
 import {
   getAuth,
@@ -15,6 +15,8 @@ const Registration = () => {
   const HandleSubmit = (event) => {
     event.preventDefault();
   };
+  const navigate = useNavigate();
+
   const [Email, setEmail] = useState("");
   const [FullName, setFullName] = useState("");
   const [Password, setPassword] = useState("");
@@ -83,6 +85,8 @@ const Registration = () => {
       // Signup new user
       createUserWithEmailAndPassword(auth, Email, Password)
         .then((userCredential) => {
+          console.log(userCredential);
+
           setloading(false);
           sendEmailVerification(auth.currentUser).then(() => {
             toast.success("🦄 Please Check your Email", {
@@ -95,6 +99,7 @@ const Registration = () => {
               progress: undefined,
               theme: "colored",
               transition: Bounce,
+              onClose: () => navigate("/login"), // Navigate on toast close
             });
           });
         })
