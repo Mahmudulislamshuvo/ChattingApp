@@ -8,6 +8,7 @@ import {
   getAuth,
   createUserWithEmailAndPassword,
   sendEmailVerification,
+  updateProfile,
 } from "firebase/auth";
 
 const Registration = () => {
@@ -100,6 +101,12 @@ const Registration = () => {
               theme: "colored",
               transition: Bounce,
               onClose: () => navigate("/login"), // Navigate on toast close
+            });
+            updateProfile(auth.currentUser, {
+              displayName: "Jane Q. User",
+              photoURL: "https://example.com/jane-q-user/profile.jpg",
+            }).then(() => {
+              console.log("Update profile Functionality Set done");
             });
           });
         })
