@@ -18,6 +18,24 @@ const Extra = () => {
             alt="User"
             className="rounded-full w-16 mb-4"
           />
+          {/* <div className="flex relative">
+              <div className="text-ThemeColor bg-[#fff] pl-[45px] pr-[50px] py-[23px] text-center ml-[20px] rounded-tl-[20px] rounded-bl-[20px]">
+                <FaHome className=" text-[45px] " />
+              </div>
+              <div className="pl-[45px] pr-[69px] h-full bg-ThemeColor rounded-lg absolute top-0 right-[-105px]"></div>
+            </div>
+            <div className=" ">
+              <FaComments className="text-[45px]" />
+            </div>
+            <div>
+              <FaBell className=" text-[45px]" />
+            </div>
+            <div>
+              <FaCog className=" text-[45px]" />
+            </div>
+            <div className="mt-[187px]">
+              <FaSignOutAlt className=" text-[45px]" />
+            </div> */}
           <nav className="flex flex-col space-y-6">
             <FaHome className="text-2xl" />
             <FaComments className="text-2xl" />

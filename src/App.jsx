@@ -9,15 +9,17 @@ import {
 } from "react-router-dom";
 
 import VerifyEmail from "./Components/HomeComponents/VerifyEmail.jsx";
+import ExtraDesign from "./Components/CommonCompo/ExtraDesign.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path="/" element={<RegistrationPage />} />
-      <Route path="login" element={<LoginPage />} />
-      <Route path="home" element={<HomePage />} />
+      <Route path="/login" element={<LoginPage />} />
+      <Route path="/home" element={<HomePage />} />
       <Route path="/" element={<h3> Error Page </h3>} />
       <Route path="email-verified" element={<VerifyEmail />} />
+      <Route path="ExtraDesign" element={<ExtraDesign />} />
     </Route>
   )
 );

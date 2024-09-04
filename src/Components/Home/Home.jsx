@@ -44,8 +44,7 @@ const Home = () => {
 
 export default Home;
 
-// ======================PRACTICE NEED AGAIN, I AM NOT SATICEFIED WITH MY PRACTICE====================
-
+// ==========================need more practice==========================
 // import React, { useEffect, useState } from "react";
 // import { getAuth, onAuthStateChanged } from "firebase/auth";
 // import VerifyEmail from "../HomeComponents/VerifyEmail";
