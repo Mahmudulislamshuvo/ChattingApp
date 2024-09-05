@@ -4,8 +4,8 @@ import HomeRight from "./HomeRight";
 
 const HomeMain = () => {
   return (
-    <div className="flex">
-      <HomeLeft active={"home"} />
+    <div className="flex p-[35px]">
+      <HomeLeft />
       <HomeRight />
     </div>
   );

@@ -8,11 +8,16 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
+import { Link, useLocation } from "react-router-dom";
 
-const HomeLeft = ({ active }) => {
+const HomeLeft = () => {
+  const Location = useLocation();
+
+  let active = Location.pathname.split("/")[2];
+
   return (
     <>
-      <div className="flex my-[35px] mx-2">
+      <div className="flex">
         {/* Sidebar */}
         <div className="bg-ThemeColor text-[rgba(255,255,255,0.72)] h-full flex flex-col items-center  py-[39px] px-[43px] rounded-[20px]">
           <picture className="w-[100px] h-[100px]">
@@ -22,40 +27,68 @@ const HomeLeft = ({ active }) => {
             <ul className="flex flex-col items-center gap-y-[82px] mt-[97px] text-[45px] ">
               <li
                 className={
-                  active === "home"
-                    ? "cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[360%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]"
+                  !active
+                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
+                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
+                    after:rounded-tl-[8px] after:rounded-bl-[8px]`
                     : "cursor-pointer"
                 }
               >
-                <FaHome className=" text-[45px] " />
+                <Link to={"/home"}>
+                  <FaHome className=" text-[45px] " />
+                </Link>
               </li>
               <li
                 className={
-                  active === "home" ? "cursor-pointer" : "cursor-pointer"
+                  active === "ChatPage"
+                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
+                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
+                    after:rounded-tl-[8px] after:rounded-bl-[8px]`
+                    : "cursor-pointer"
                 }
               >
-                <FaComments className="text-[45px]" />
+                <Link to={"/home/ChatPage"}>
+                  <FaComments className="text-[45px]" />
+                </Link>
               </li>
               <li
                 className={
-                  active === "home" ? "cursor-pointer" : "cursor-pointer"
+                  active === "NotificationPage"
+                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
+                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
+                    after:rounded-tl-[8px] after:rounded-bl-[8px]`
+                    : "cursor-pointer"
                 }
               >
-                <FaBell className=" text-[45px] " />
+                <Link to={"/home/NotificationPage"}>
+                  <FaBell className=" text-[45px] " />
+                </Link>
               </li>
               <li
                 className={
-                  active === "home" ? "cursor-pointer" : "cursor-pointer"
+                  active === "SettingsPage"
+                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
+                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
+                    after:rounded-tl-[8px] after:rounded-bl-[8px]`
+                    : "cursor-pointer"
                 }
               >
-                <FaCog className=" text-[45px] animate-spin" />
+                <Link to={"/home/SettingsPage"}>
+                  <FaCog className=" text-[45px] animate-spin" />
+                </Link>
               </li>
               <li
                 className={
-                  active === "home" ? "cursor-pointer" : "cursor-pointer"
+                  active === "logout"
+                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
+                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
+                    after:rounded-tl-[8px] after:rounded-bl-[8px] mt-[100px]`
+                    : "cursor-pointer mt-[100px]"
                 }
               >
-                <FaSignOutAlt className=" text-[45px] mt-[100px] animate-pulse" />
+                <Link to={"/home"}>
+                  <FaSignOutAlt className=" text-[45px] animate-pulse" />
+                </Link>
               </li>
             </ul>
           </div>

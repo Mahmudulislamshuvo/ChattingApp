@@ -9,10 +9,13 @@ import {
   createUserWithEmailAndPassword,
   sendEmailVerification,
   updateProfile,
+  onAuthStateChanged,
 } from "firebase/auth";
+import { getDatabase, push, ref, set } from "firebase/database";
 
 const Registration = () => {
   const auth = getAuth();
+  const db = getDatabase();
   const HandleSubmit = (event) => {
     event.preventDefault();
   };
@@ -87,7 +90,6 @@ const Registration = () => {
       createUserWithEmailAndPassword(auth, Email, Password)
         .then((userCredential) => {
           console.log(userCredential);
-
           setloading(false);
           sendEmailVerification(auth.currentUser).then(() => {
             toast.success("🦄 Please Check your Email", {
@@ -103,11 +105,24 @@ const Registration = () => {
               onClose: () => navigate("/login"), // Navigate on toast close
             });
             updateProfile(auth.currentUser, {
-              displayName: "Jane Q. User",
-              photoURL: "https://example.com/jane-q-user/profile.jpg",
-            }).then(() => {
-              console.log("Update profile Functionality Set done");
-            });
+              displayName: FullName,
+              photoURL: null,
+            })
+              .then(() => {
+                onAuthStateChanged(auth, (userinfo) => {
+                  let dbRef = ref(db, "users/");
+                  set(push(dbRef), {
+                    displayName: userinfo.displayName,
+                    email: userinfo.email,
+                  });
+                });
+              })
+              .then(() => {
+                console.log("data upload done");
+              })
+              .catch(() => {
+                console.log("database Write failed");
+              });
           });
         })
         .catch((error) => {
@@ -146,13 +161,6 @@ const Registration = () => {
               Free register and you can enjoy it
             </p>
             <form onSubmit={HandleSubmit}>
-              {/* <Input
-                className={"pt-[38px]"}
-                type="text"
-                placeholder="Enter your Email"
-                id="email"
-                label="Email address"
-              /> */}
               <div>
                 <label
                   className="font-Nunito text-sm block font-semibold opacity-30"
