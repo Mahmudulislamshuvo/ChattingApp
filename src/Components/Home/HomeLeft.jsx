@@ -12,9 +12,9 @@ import { Link, useLocation } from "react-router-dom";
 
 const HomeLeft = () => {
   const Location = useLocation();
+  console.log();
 
   let active = Location.pathname.split("/")[2];
-
   return (
     <>
       <div className="flex">
@@ -40,40 +40,40 @@ const HomeLeft = () => {
               </li>
               <li
                 className={
-                  active === "ChatPage"
+                  active === "chat"
                     ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
                     relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
                     after:rounded-tl-[8px] after:rounded-bl-[8px]`
                     : "cursor-pointer"
                 }
               >
-                <Link to={"/home/ChatPage"}>
+                <Link to={`/home/chat`}>
                   <FaComments className="text-[45px]" />
                 </Link>
               </li>
               <li
                 className={
-                  active === "NotificationPage"
+                  active === "notifications"
                     ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
                     relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
                     after:rounded-tl-[8px] after:rounded-bl-[8px]`
                     : "cursor-pointer"
                 }
               >
-                <Link to={"/home/NotificationPage"}>
+                <Link to={"/home/notifications"}>
                   <FaBell className=" text-[45px] " />
                 </Link>
               </li>
               <li
                 className={
-                  active === "SettingsPage"
+                  active === "settings"
                     ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
                     relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
                     after:rounded-tl-[8px] after:rounded-bl-[8px]`
                     : "cursor-pointer"
                 }
               >
-                <Link to={"/home/SettingsPage"}>
+                <Link to={"/home/settings"}>
                   <FaCog className=" text-[45px] animate-spin" />
                 </Link>
               </li>
@@ -86,9 +86,7 @@ const HomeLeft = () => {
                     : "cursor-pointer mt-[100px]"
                 }
               >
-                <Link to={"/home"}>
-                  <FaSignOutAlt className=" text-[45px] animate-pulse" />
-                </Link>
+                <FaSignOutAlt className=" text-[45px] animate-pulse" />
               </li>
             </ul>
           </div>

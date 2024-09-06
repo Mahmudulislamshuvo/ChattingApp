@@ -20,13 +20,13 @@ const router = createBrowserRouter(
       <Route path="/" element={<RegistrationPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/home" element={<HomePage />}>
-        <Route path="ChatPage" element={<ChatPage />} />
-        <Route path="NotificationPage" element={<NotificationPage />} />
-        <Route path="SettingsPage" element={<SettingsPage />} />
+        <Route path="chat" element={<ChatPage />} />
+        <Route path="notifications" element={<NotificationPage />} />
+        <Route path="settings" element={<SettingsPage />} />
       </Route>
       <Route path="*" element={<h3> Error Page </h3>} />
-      <Route path="email-verified" element={<VerifyEmail />} />
-      <Route path="ExtraDesign" element={<ExtraDesign />} />
+      <Route path="/email-verified" element={<VerifyEmail />} />
+      <Route path="/ExtraDesign" element={<ExtraDesign />} />
     </Route>
   )
 );
