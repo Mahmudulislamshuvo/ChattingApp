@@ -6,6 +6,7 @@ export default {
       fontFamily: {
         Nunito: ["Nunito", "sans-serif"],
         OpenSans: ["Open Sans", "sans-serif"],
+        Poppins: ["Poppins", "sans - serif"],
       },
       colors: {
         ThemeColor: "#5F35F5",

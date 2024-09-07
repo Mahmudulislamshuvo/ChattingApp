@@ -21,4 +21,18 @@
   img {
     vertical-align: middle;
   }
+
+  ::-webkit-scrollbar {
+    width: 8px;
+    background-color: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: rgba(95, 53, 245, 0.692); /* Example dark color */
+    border-radius: 9999px; /* Rounded corners */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(209, 213, 219, 0.5); /* Lighter background color */
+  }
 }

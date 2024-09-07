@@ -13,6 +13,7 @@ import ExtraDesign from "./Components/CommonCompo/ExtraDesign.jsx";
 import ChatPage from "./Pages/ChatPage.jsx";
 import NotificationPage from "./Pages/NotificationPage.jsx";
 import SettingsPage from "./Pages/SettingsPage.jsx";
+import HomeContects from "./Pages/HomeContects.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -20,6 +21,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<RegistrationPage />} />
       <Route path="/login" element={<LoginPage />} />
       <Route path="/home" element={<HomePage />}>
+        <Route index path="contents" element={<HomeContects />} />
         <Route path="chat" element={<ChatPage />} />
         <Route path="notifications" element={<NotificationPage />} />
         <Route path="settings" element={<SettingsPage />} />

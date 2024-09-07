@@ -17,33 +17,29 @@ const HomeLeft = () => {
   let active = Location.pathname.split("/")[2];
   return (
     <>
-      <div className="flex">
+      <div className="mr-[63px] flex">
         {/* Sidebar */}
-        <div className="bg-ThemeColor text-[rgba(255,255,255,0.72)] h-full flex flex-col items-center  py-[39px] px-[43px] rounded-[20px]">
-          <picture className="w-[100px] h-[100px]">
+        <div className="flex h-full flex-col items-center rounded-[20px] bg-ThemeColor px-[43px] py-[39px] text-[rgba(255,255,255,0.72)]">
+          <picture className="h-[100px] w-[100px]">
             <img src={HomeLeftImg} alt="HomeLeft.png" />
           </picture>
           <div className=" ">
-            <ul className="flex flex-col items-center gap-y-[82px] mt-[97px] text-[45px] ">
+            <ul className="mt-[97px] flex flex-col items-center gap-y-[82px] text-[45px]">
               <li
                 className={
-                  !active
-                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
-                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
-                    after:rounded-tl-[8px] after:rounded-bl-[8px]`
+                  active === "contents"
+                    ? `after:[""] relative flex w-[370%] cursor-pointer items-center justify-center rounded-bl-[20px] rounded-tl-[20px] bg-[#FFFFFF] py-[22px] text-ThemeColor after:absolute after:right-[-8px] after:top-0 after:h-full after:w-4 after:rounded-bl-[8px] after:rounded-tl-[8px] after:bg-ThemeColor`
                     : "cursor-pointer"
                 }
               >
-                <Link to={"/home"}>
-                  <FaHome className=" text-[45px] " />
+                <Link to={"contents"}>
+                  <FaHome className="text-[45px]" />
                 </Link>
               </li>
               <li
                 className={
                   active === "chat"
-                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
-                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
-                    after:rounded-tl-[8px] after:rounded-bl-[8px]`
+                    ? `after:[""] relative flex w-[370%] cursor-pointer items-center justify-center rounded-bl-[20px] rounded-tl-[20px] bg-[#FFFFFF] py-[22px] text-ThemeColor after:absolute after:right-[-8px] after:top-0 after:h-full after:w-4 after:rounded-bl-[8px] after:rounded-tl-[8px] after:bg-ThemeColor`
                     : "cursor-pointer"
                 }
               >
@@ -54,39 +50,33 @@ const HomeLeft = () => {
               <li
                 className={
                   active === "notifications"
-                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
-                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
-                    after:rounded-tl-[8px] after:rounded-bl-[8px]`
+                    ? `after:[""] relative flex w-[370%] cursor-pointer items-center justify-center rounded-bl-[20px] rounded-tl-[20px] bg-[#FFFFFF] py-[22px] text-ThemeColor after:absolute after:right-[-8px] after:top-0 after:h-full after:w-4 after:rounded-bl-[8px] after:rounded-tl-[8px] after:bg-ThemeColor`
                     : "cursor-pointer"
                 }
               >
                 <Link to={"/home/notifications"}>
-                  <FaBell className=" text-[45px] " />
+                  <FaBell className="animate-bounce text-[45px]" />
                 </Link>
               </li>
               <li
                 className={
                   active === "settings"
-                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
-                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
-                    after:rounded-tl-[8px] after:rounded-bl-[8px]`
+                    ? `after:[""] relative flex w-[370%] cursor-pointer items-center justify-center rounded-bl-[20px] rounded-tl-[20px] bg-[#FFFFFF] py-[22px] text-ThemeColor after:absolute after:right-[-8px] after:top-0 after:h-full after:w-4 after:rounded-bl-[8px] after:rounded-tl-[8px] after:bg-ThemeColor`
                     : "cursor-pointer"
                 }
               >
                 <Link to={"/home/settings"}>
-                  <FaCog className=" text-[45px] animate-spin" />
+                  <FaCog className="animate-spin text-[45px]" />
                 </Link>
               </li>
               <li
                 className={
                   active === "logout"
-                    ? `cursor-pointer bg-[#FFFFFF] text-ThemeColor w-[370%] flex justify-center items-center py-[22px] rounded-tl-[20px] rounded-bl-[20px]
-                    relative after:absolute after:[""] after:top-0 after:right-[-8px] after:w-4 after:h-full after:bg-ThemeColor
-                    after:rounded-tl-[8px] after:rounded-bl-[8px] mt-[100px]`
-                    : "cursor-pointer mt-[100px]"
+                    ? `after:[""] relative mt-[100px] flex w-[370%] cursor-pointer items-center justify-center rounded-bl-[20px] rounded-tl-[20px] bg-[#FFFFFF] py-[22px] text-ThemeColor after:absolute after:right-[-8px] after:top-0 after:h-full after:w-4 after:rounded-bl-[8px] after:rounded-tl-[8px] after:bg-ThemeColor`
+                    : "mt-[100px] cursor-pointer"
                 }
               >
-                <FaSignOutAlt className=" text-[45px] animate-pulse" />
+                <FaSignOutAlt className="animate-pulse text-[45px]" />
               </li>
             </ul>
           </div>
