@@ -1,5 +1,4 @@
 import React from "react";
-import Searchbar from "../HomePageComonCompo/Searchbar";
 import { HiDotsVertical } from "react-icons/hi";
 import HomeContentOne from "../../../assets/Home/one.png";
 import HomeContentTwo from "../../../assets/Home/two.png";
@@ -47,12 +46,9 @@ const GroupList = () => {
   ];
   return (
     <div className="max-h-[450px] w-[427px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]">
-      <div>
-        <Searchbar width="427" />
-      </div>
-      <div className="mt-[43px] pt-[13px]">
+      <div className="pt-[13px]">
         <div className="flex w-[90] items-center justify-between text-wrap text-center">
-          <h3 className="font-Poppins pl-[20px] text-[20px] font-semibold text-[#000]">
+          <h3 className="pl-[20px] font-Poppins text-[20px] font-semibold text-[#000]">
             Groups List
           </h3>
           <span>
@@ -82,7 +78,7 @@ const GroupList = () => {
                 </div>
               </div>
 
-              <button className="font-Poppins rounded-[5px] bg-ThemeColor px-[22px] text-[20px] font-semibold text-[#fff]">
+              <button className="rounded-[5px] bg-ThemeColor px-[22px] font-Poppins text-[20px] font-semibold text-[#fff]">
                 {items.button}
               </button>
             </div>
