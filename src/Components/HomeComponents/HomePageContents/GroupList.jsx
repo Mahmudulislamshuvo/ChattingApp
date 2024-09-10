@@ -57,7 +57,7 @@ const GroupList = () => {
         </div>
 
         {/* Parent with divide-y class */}
-        <div className="h-[300px] divide-y divide-[rgba(0,0,0,0.25)] overflow-y-scroll">
+        <div className="h-[400px] divide-y divide-[rgba(0,0,0,0.25)] overflow-y-scroll">
           {/* Group Section 1 */}
           {users?.map((items) => (
             <div className="flex items-center justify-between py-3.5 pl-[20px] pr-[39px] pt-[17px]">

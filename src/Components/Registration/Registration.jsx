@@ -114,6 +114,8 @@ const Registration = () => {
                   set(push(dbRef), {
                     displayName: userinfo.displayName,
                     email: userinfo.email,
+                    uid: userinfo.uid,
+                    picUrl: "",
                   });
                 });
               })
@@ -152,18 +154,18 @@ const Registration = () => {
     <>
       <ToastContainer />
       <div className="flex">
-        <div className="w-1/2 flex items-center justify-center">
+        <div className="flex w-1/2 items-center justify-center">
           <div className="">
-            <h2 className="font-Nunito font-bold text-[34px] text-[#11175D] pb-2.5">
+            <h2 className="pb-2.5 font-Nunito text-[34px] font-bold text-[#11175D]">
               Get started with easily register
             </h2>
-            <p className="font-Nunito text-sm pb-[42px]">
+            <p className="pb-[42px] font-Nunito text-sm">
               Free register and you can enjoy it
             </p>
             <form onSubmit={HandleSubmit}>
               <div>
                 <label
-                  className="font-Nunito text-sm block font-semibold opacity-30"
+                  className="block font-Nunito text-sm font-semibold opacity-30"
                   htmlFor="text"
                 >
                   Email Adress
@@ -174,18 +176,18 @@ const Registration = () => {
                   id="Email"
                   value={Email}
                   autoComplete="off"
-                  className="py-[26px] w-3/4 rounded-lg px-6 border-4 border-[rgba(17,23,93,0.45)] "
+                  className="w-3/4 rounded-lg border-4 border-[rgba(17,23,93,0.45)] px-6 py-[26px]"
                   onChange={HandleEmail}
                 />
                 {EmailErr && (
-                  <span className="text-red-600 block mt-2 ml-1">
+                  <span className="ml-1 mt-2 block text-red-600">
                     {EmailErr}
                   </span>
                 )}
               </div>
               <div className="pt-[38px]">
                 <label
-                  className="font-Nunito text-sm block font-semibold opacity-30"
+                  className="block font-Nunito text-sm font-semibold opacity-30"
                   htmlFor="text"
                 >
                   Full Name
@@ -196,21 +198,21 @@ const Registration = () => {
                   id="fulname"
                   value={FullName}
                   autoComplete="off"
-                  className="py-[26px] w-3/4 rounded-lg px-6 border-4 border-[rgba(17,23,93,0.45)]  "
+                  className="w-3/4 rounded-lg border-4 border-[rgba(17,23,93,0.45)] px-6 py-[26px]"
                   onChange={HandleName}
                   // onChange={(event) => {
                   //   event.target.value;
                   // }} evabe dile function use korte parbona.
                 />
                 {NameErr && (
-                  <span className="text-red-600 block mt-2 ml-1">
+                  <span className="ml-1 mt-2 block text-red-600">
                     {NameErr}
                   </span>
                 )}
               </div>
-              <div className="pt-[38px] pb-[55px] relative">
+              <div className="relative pb-[55px] pt-[38px]">
                 <label
-                  className="font-Nunito text-sm block opacity-30 font-semibold "
+                  className="block font-Nunito text-sm font-semibold opacity-30"
                   htmlFor="text"
                 >
                   Password
@@ -221,11 +223,11 @@ const Registration = () => {
                   id="Password"
                   value={Password}
                   autoComplete="off"
-                  className="py-[26px] w-3/4 rounded-lg px-6 border-4 border-[rgba(17,23,93,0.45)] "
+                  className="w-3/4 rounded-lg border-4 border-[rgba(17,23,93,0.45)] px-6 py-[26px]"
                   onChange={HandlePass}
                 />
                 {PAssErr && (
-                  <span className="text-red-600 block mt-2 ml-1">
+                  <span className="ml-1 mt-2 block text-red-600">
                     {PAssErr}
                   </span>
                 )}
@@ -237,32 +239,32 @@ const Registration = () => {
                 </div>
               </div>
               <button
-                className=" py-4 w-3/4 rounded-full bg-ThemeColor text-white font-semibold mt-6 font-xl relative "
+                className="font-xl relative mt-6 w-3/4 rounded-full bg-ThemeColor py-4 font-semibold text-white"
                 onClick={HandleSignUp}
               >
                 {loading && (
                   <svg
-                    class=" animate-spin h-5 w-5 mr-3 ... absolute top-[35%] left-[30%] border-4 rounded-full border-t-red-200 border-b-red-600"
+                    class="... absolute left-[30%] top-[35%] mr-3 h-5 w-5 animate-spin rounded-full border-4 border-b-red-600 border-t-red-200"
                     viewBox="0 0 24 24"
                   ></svg>
                 )}
                 Sign up
               </button>
             </form>
-            <div className="text-center w-3/4 mt-[35px] font-OpenSans font-[13px]">
+            <div className="mt-[35px] w-3/4 text-center font-OpenSans font-[13px]">
               <p className="">
                 Already have an account ?{" "}
-                <span className="text-[#EA6C00] font-bold">
+                <span className="font-bold text-[#EA6C00]">
                   <Link to={"login"}>Sign In</Link>
                 </span>
               </p>
             </div>
           </div>
         </div>
-        <div className="w-1/2 h-screen">
+        <div className="h-screen w-1/2">
           <picture>
             <img
-              className="w-full h-full object-cover"
+              className="h-full w-full object-cover"
               src={RegistrationIMG}
               alt="Registration.png"
             />

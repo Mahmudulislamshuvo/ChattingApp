@@ -9,7 +9,6 @@ import {
 } from "react-router-dom";
 
 import VerifyEmail from "./Components/HomeComponents/VerifyEmail.jsx";
-import ExtraDesign from "./Components/CommonCompo/ExtraDesign.jsx";
 import ChatPage from "./Pages/ChatPage.jsx";
 import NotificationPage from "./Pages/NotificationPage.jsx";
 import SettingsPage from "./Pages/SettingsPage.jsx";
@@ -28,9 +27,8 @@ const router = createBrowserRouter(
       </Route>
       <Route path="*" element={<h3> Error Page </h3>} />
       <Route path="/email-verified" element={<VerifyEmail />} />
-      <Route path="/ExtraDesign" element={<ExtraDesign />} />
-    </Route>
-  )
+    </Route>,
+  ),
 );
 
 function App() {
