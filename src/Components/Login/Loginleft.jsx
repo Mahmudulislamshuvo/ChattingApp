@@ -10,9 +10,11 @@ import {
 } from "firebase/auth";
 import Loading from "../CommonCompo/Loading.jsx";
 import { Link, useNavigate } from "react-router-dom";
+import { getDatabase, push, ref, set } from "firebase/database";
 
 const Loginleft = () => {
   const auth = getAuth();
+  const db = getDatabase();
   const provider = new GoogleAuthProvider();
   const navigate = useNavigate();
 
@@ -87,7 +89,7 @@ const Loginleft = () => {
           const user = userCredential._tokenResponse.idToken;
           localStorage.setItem(
             "User Token",
-            userCredential._tokenResponse.idToken
+            userCredential._tokenResponse.idToken,
           );
           navigate("/home");
         })
@@ -110,9 +112,21 @@ const Loginleft = () => {
         localStorage.setItem("User Token", token);
 
         if (user) {
-          navigate("/home");
-          console.log(user);
+          console.log("this is my login user", user.reloadUserInfo);
+
+          let dbRef = ref(db, "users/");
+          const { displayName, localId, photoUrl, email } = user.reloadUserInfo;
+          set(push(dbRef), {
+            displayName: displayName,
+            email,
+            uid: localId,
+            profile_picture: photoUrl,
+          });
         }
+      })
+      .then(() => {
+        console.log("data uploded in firebase");
+        navigate("/home");
       })
       .catch((error) => {
         const errorCode = error.code;
@@ -125,15 +139,15 @@ const Loginleft = () => {
   };
 
   return (
-    <div className="flex w-[55%] justify-center items-center">
+    <div className="flex w-[55%] items-center justify-center">
       <div>
         <div>
-          <h1 className="text-[#03014C] font-bold text-[34px] font-OpenSans pb-[30px]">
+          <h1 className="pb-[30px] font-OpenSans text-[34px] font-bold text-[#03014C]">
             Login to your account!
           </h1>
         </div>
         <div
-          className="max-w-[235px] rounded-lg border-[1px] border-[rgba(3,1,76,0.31)] flex py-[18px] pr-10 pl-[24px] items-center cursor-pointer"
+          className="flex max-w-[235px] cursor-pointer items-center rounded-lg border-[1px] border-[rgba(3,1,76,0.31)] py-[18px] pl-[24px] pr-10"
           onClick={HandleLoginGoogle}
         >
           <FcGoogle className="text-md" />
@@ -145,7 +159,7 @@ const Loginleft = () => {
           <form onSubmit={HandleSubmit}>
             <div>
               <label
-                className="font-Nunito text-sm block font-semibold opacity-30 pt-[32px]"
+                className="block pt-[32px] font-Nunito text-sm font-semibold opacity-30"
                 htmlFor="text"
               >
                 Email Adress
@@ -155,18 +169,18 @@ const Loginleft = () => {
                 placeholder="Enter Your Email"
                 id="Email"
                 autoComplete="off"
-                className="pt-[15px] w-3/4 border-b-2 border-[rgba(17,23,93,0.45)]"
+                className="w-3/4 border-b-2 border-[rgba(17,23,93,0.45)] pt-[15px]"
                 onChange={HandleInputFiel}
               />
               {Error.Emailerror && (
-                <span className="text-red-600 block mt-2 ml-1">
+                <span className="ml-1 mt-2 block text-red-600">
                   {Error.Emailerror}
                 </span>
               )}
             </div>
-            <div className="pt-[38px] pb-[55px] relative">
+            <div className="relative pb-[55px] pt-[38px]">
               <label
-                className="font-Nunito text-sm block opacity-30 font-semibold "
+                className="block font-Nunito text-sm font-semibold opacity-30"
                 htmlFor="text"
               >
                 Password
@@ -176,11 +190,11 @@ const Loginleft = () => {
                 placeholder="123456789@#$skhjgHJG"
                 id="Password"
                 autoComplete="off"
-                className="pt-[15px] w-3/4 border-b-2 border-[rgba(17,23,93,0.45)] relative"
+                className="relative w-3/4 border-b-2 border-[rgba(17,23,93,0.45)] pt-[15px]"
                 onChange={HandleInputFiel}
               />
               {Error.PasswordError && (
-                <span className="text-red-600 block mt-2 ml-1">
+                <span className="ml-1 mt-2 block text-red-600">
                   {Error.PasswordError}
                 </span>
               )}
@@ -198,21 +212,21 @@ const Loginleft = () => {
             </div>
 
             <button
-              className=" py-4 w-3/4 rounded-lg bg-ThemeColor text-white font-semibold mt-2 font-xl relative"
+              className="font-xl relative mt-2 w-3/4 rounded-lg bg-ThemeColor py-4 font-semibold text-white"
               onClick={Handlelogin}
             >
               {Loadd && (
-                <span className="absolute top-[24%] left-[13%]">
+                <span className="absolute left-[13%] top-[24%]">
                   <Loading />
                 </span>
               )}
               Login to Continue
             </button>
 
-            <div className="text-center w-3/4 mt-[35px] font-OpenSans font-[13px]">
+            <div className="mt-[35px] w-3/4 text-center font-OpenSans font-[13px]">
               <p className="">
                 Don’t have an account ?
-                <span className="text-[#EA6C00] font-bold pl-1">
+                <span className="pl-1 font-bold text-[#EA6C00]">
                   <Link to={"/"}>Sign Up</Link>
                 </span>
               </p>

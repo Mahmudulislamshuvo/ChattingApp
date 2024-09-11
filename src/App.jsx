@@ -6,6 +6,7 @@ import {
   createRoutesFromElements,
   RouterProvider,
   Route,
+  Navigate,
 } from "react-router-dom";
 
 import VerifyEmail from "./Components/HomeComponents/VerifyEmail.jsx";
@@ -19,8 +20,11 @@ const router = createBrowserRouter(
     <Route>
       <Route path="/" element={<RegistrationPage />} />
       <Route path="/login" element={<LoginPage />} />
+      {/* Home route */}
       <Route path="/home" element={<HomePage />}>
-        <Route index path="contents" element={<HomeContects />} />
+        {/* Redirect from /home to /home/contents */}
+        <Route index element={<Navigate to="/home/contents" replace />} />
+        <Route path="contents" element={<HomeContects />} />
         <Route path="chat" element={<ChatPage />} />
         <Route path="notifications" element={<NotificationPage />} />
         <Route path="settings" element={<SettingsPage />} />

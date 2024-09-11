@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useId, useState } from "react";
 import RegistrationIMG from "../../assets/Registration.png";
 import { ToastContainer, toast, Bounce } from "react-toastify";
 import { FaEye } from "react-icons/fa";
@@ -109,14 +109,12 @@ const Registration = () => {
               photoURL: null,
             })
               .then(() => {
-                onAuthStateChanged(auth, (userinfo) => {
-                  let dbRef = ref(db, "users/");
-                  set(push(dbRef), {
-                    displayName: userinfo.displayName,
-                    email: userinfo.email,
-                    uid: userinfo.uid,
-                    picUrl: "",
-                  });
+                let dbRef = ref(db, "users/");
+                set(push(dbRef), {
+                  displayName: auth.currentUser.displayName,
+                  email: auth.currentUser.email,
+                  uid: auth.currentUser.uid,
+                  profile_picture: "",
                 });
               })
               .then(() => {
