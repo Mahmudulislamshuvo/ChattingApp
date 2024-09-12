@@ -49,7 +49,15 @@ const UserList = () => {
       reciverName: items.displayName,
       reciverUserkey: items.userKey,
       createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
-    });
+    })
+      // extra from chat gtp=======
+      .then(() => {
+        // Update the local state immediately after sending the request
+        setfriendReqUser((prev) => [...prev, auth.currentUser.uid + items.uid]);
+      })
+      .catch((error) => {
+        console.error("Error sending friend request: ", error);
+      });
   };
 
   useEffect(() => {
@@ -61,7 +69,7 @@ const UserList = () => {
       });
       setfriendReqUser(friendrequestDb);
     });
-  }, [friendReqUser]);
+  }, []);
 
   const formattedDate = moment("2024-09-13T16:30:21").format(
     "MMMM Do YYYY, h:mm:ss a",
@@ -114,12 +122,20 @@ const UserList = () => {
                     </div>
                   </div>
                   <div>
-                    <button
-                      className="rounded-[5px] bg-ThemeColor px-[5px] font-Poppins text-[20px] font-semibold text-[#fff]"
-                      onClick={() => HandleFriendRequest(items)}
-                    >
-                      {items.button ? "Add" : "Add"}
-                    </button>
+                    {friendReqUser.includes(
+                      auth.currentUser.uid + items.uid,
+                    ) ? (
+                      <button className="rounded-[5px] bg-ThemeColor px-[5px] font-Poppins text-[20px] font-semibold text-[#fff]">
+                        Sent
+                      </button>
+                    ) : (
+                      <button
+                        className="rounded-[5px] bg-ThemeColor px-[5px] font-Poppins text-[20px] font-semibold text-[#fff]"
+                        onClick={() => HandleFriendRequest(items)}
+                      >
+                        {items.button ? "Add" : "Add"}
+                      </button>
+                    )}
                   </div>
                 </div>
               ))
