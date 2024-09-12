@@ -12,6 +12,7 @@ import {
   onAuthStateChanged,
 } from "firebase/auth";
 import { getDatabase, push, ref, set } from "firebase/database";
+import moment from "moment";
 
 const Registration = () => {
   const auth = getAuth();
@@ -89,7 +90,6 @@ const Registration = () => {
       // Signup new user
       createUserWithEmailAndPassword(auth, Email, Password)
         .then((userCredential) => {
-          console.log(userCredential);
           setloading(false);
           sendEmailVerification(auth.currentUser).then(() => {
             toast.success("🦄 Please Check your Email", {
@@ -115,6 +115,7 @@ const Registration = () => {
                   email: auth.currentUser.email,
                   uid: auth.currentUser.uid,
                   profile_picture: "",
+                  createdDate: moment().format("MMMM Do YYYY, h:mm:ss a"),
                 });
               })
               .then(() => {

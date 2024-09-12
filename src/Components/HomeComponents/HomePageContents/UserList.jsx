@@ -1,73 +1,71 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import Userlist1 from "../../../assets/Home/Userslist/userlist1.jpg";
-import Userlist2 from "../../../assets/Home/Userslist/userlist2.jpg";
-import Userlist3 from "../../../assets/Home/Userslist/userlist3.jpg";
-import Userlist4 from "../../../assets/Home/Userslist/userlist4.jpg";
-import Userlist5 from "../../../assets/Home/Userslist/userlist5.jpg";
-import Userlist6 from "../../../assets/Home/Userslist/userlist6.jpg";
-import Userlist7 from "../../../assets/Home/Userslist/userlist7.jpg";
-import Userlist8 from "../../../assets/Home/Userslist/userlist8.jpg";
+
+import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import { getAuth } from "firebase/auth";
+import moment from "moment";
 
 const UserList = () => {
-  const Userlist = [
-    {
-      id: 1,
-      imege: Userlist1,
-      tittle: "Sumona",
-      time: "Today, 12:29am",
-      button: "Add",
-    },
-    {
-      id: 2,
-      imege: Userlist2,
-      tittle: "Shuvo",
-      time: "Today, 7:09pm",
-      button: "Add",
-    },
-    {
-      id: 3,
-      imege: Userlist3,
-      tittle: "Mohona",
-      time: "Today, 05:23pm",
-      button: "Add",
-    },
-    {
-      id: 4,
-      imege: Userlist4,
-      tittle: "Ammu",
-      time: "Yesterday, 8:56pm",
-      button: "Add",
-    },
-    {
-      id: 5,
-      imege: Userlist5,
-      tittle: "Shuborna",
-      time: "Today, 8:56pm",
-      button: "Add",
-    },
-    {
-      id: 6,
-      imege: Userlist6,
-      tittle: "Riya",
-      time: "Tue, 5:32pm",
-      button: "Add",
-    },
-    {
-      id: 7,
-      imege: Userlist7,
-      tittle: "Ridiya",
-      time: "Today, 11:56am",
-      button: "Add",
-    },
-    {
-      id: 8,
-      imege: Userlist8,
-      tittle: "Nusaiba",
-      time: "Fri, 10:54pm",
-      button: "Add",
-    },
-  ];
+  const auth = getAuth();
+  const db = getDatabase();
+  // All state
+  const [userlist, setuserlist] = useState([]);
+  const [RecentcurrentUser, setRecentcurrentUser] = useState({});
+  const [friendReqUser, setfriendReqUser] = useState([]);
+  // All state End
+  // User lisr dekhabe kinto nijeke dekhabena ai kaj
+  useEffect(() => {
+    const userDbRef = ref(db, "users/");
+    onValue(userDbRef, (snapshot) => {
+      let userArrey = [];
+      snapshot.forEach((items) => {
+        if (items.val().uid !== auth.currentUser.uid) {
+          userArrey.push({ ...items.val(), userKey: items.key });
+        } else if (items.val().uid === auth.currentUser.uid) {
+          setRecentcurrentUser({ ...items.val(), userKey: items.key });
+        }
+        // Second way
+        // userArrey.push(Object.assign(items.val(), { userKey: items.key }));
+      });
+      setuserlist(userArrey);
+    });
+  }, []);
+  // User lisr dekhabe kinto nijeke dekhabena ai kaj End
+
+  /**
+   * todo: Timezone handle
+   * @params ({})
+   **/
+
+  const HandleFriendRequest = (items) => {
+    set(push(ref(db, "FriendRequest/")), {
+      senderUid: auth.currentUser.uid,
+      senderemail: auth.currentUser.email,
+      SenderName: auth.currentUser.displayName,
+      SenderUserKey: RecentcurrentUser.userKey,
+      reciverUid: items.uid,
+      reciverEmail: items.email,
+      reciverName: items.displayName,
+      reciverUserkey: items.userKey,
+      createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+    });
+  };
+
+  useEffect(() => {
+    const FriendReqUserDbRef = ref(db, "FriendRequest/");
+    let friendrequestDb = [];
+    onValue(FriendReqUserDbRef, (snapshot) => {
+      snapshot.forEach((items) => {
+        friendrequestDb.push(items.val().senderUid + items.val().reciverUid);
+      });
+      setfriendReqUser(friendrequestDb);
+    });
+  }, [friendReqUser]);
+
+  const formattedDate = moment("2024-09-13T16:30:21").format(
+    "MMMM Do YYYY, h:mm:ss a",
+  );
 
   return (
     <>
@@ -85,35 +83,51 @@ const UserList = () => {
           {/* Parent with divide-y class */}
           <div className="h-[403px] divide-y divide-[rgba(0,0,0,0.25)] overflow-y-scroll">
             {/* Group Section 1 */}
-
-            {Userlist?.map((items) => (
-              <div className="flex items-center justify-between py-3.5 pl-[20px] pr-[39px] pt-[17px]">
-                <div className="flex items-center">
-                  <div className="relative mr-[13px]">
-                    <picture>
-                      <img
-                        src={items.imege}
-                        alt=""
-                        className="h-[54px] w-[52px] rounded-full"
-                      />
-                    </picture>
+            {userlist.length > 0 ? (
+              userlist.map((items) => (
+                <div
+                  className="flex items-center justify-between py-3.5 pl-[20px] pr-[39px] pt-[17px]"
+                  key={items.id}
+                >
+                  <div className="flex items-center">
+                    <div className="relative mr-[13px]">
+                      <picture>
+                        <img
+                          src={
+                            items.profile_picture
+                              ? items.profile_picture
+                              : Userlist1
+                          }
+                          alt=""
+                          className="h-[54px] w-[52px] rounded-full"
+                        />
+                      </picture>
+                    </div>
+                    <div>
+                      <h3 className="font-Poppins text-[14px] font-semibold">
+                        {items.displayName}
+                      </h3>
+                      <p className="font-Poppins text-[12px] font-medium text-[rgba(77,77,77,0.73)]">
+                        {/* {moment(items.createdDate).fromNow()} */}
+                        {moment("2024-09-10T16:30:21").calendar()}
+                      </p>
+                    </div>
                   </div>
                   <div>
-                    <h3 className="font-Poppins text-[14px] font-semibold">
-                      {items.tittle}
-                    </h3>
-                    <p className="font-Poppins text-[12px] font-medium text-[rgba(77,77,77,0.73)]">
-                      {items.time}
-                    </p>
+                    <button
+                      className="rounded-[5px] bg-ThemeColor px-[5px] font-Poppins text-[20px] font-semibold text-[#fff]"
+                      onClick={() => HandleFriendRequest(items)}
+                    >
+                      {items.button ? "Add" : "Add"}
+                    </button>
                   </div>
                 </div>
-                <div>
-                  <button className="rounded-[5px] bg-ThemeColor px-[5px] font-Poppins text-[20px] font-semibold text-[#fff]">
-                    {items.button}
-                  </button>
-                </div>
+              ))
+            ) : (
+              <div className="flex items-center justify-center">
+                <h3 className="h-full pt-[50%]">No user found</h3>
               </div>
-            ))}
+            )}
           </div>
         </div>
       </div>

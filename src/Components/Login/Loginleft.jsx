@@ -112,8 +112,6 @@ const Loginleft = () => {
         localStorage.setItem("User Token", token);
 
         if (user) {
-          console.log("this is my login user", user.reloadUserInfo);
-
           let dbRef = ref(db, "users/");
           const { displayName, localId, photoUrl, email } = user.reloadUserInfo;
           set(push(dbRef), {
