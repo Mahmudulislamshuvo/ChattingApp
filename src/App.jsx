@@ -14,6 +14,7 @@ import ChatPage from "./Pages/ChatPage.jsx";
 import NotificationPage from "./Pages/NotificationPage.jsx";
 import SettingsPage from "./Pages/SettingsPage.jsx";
 import HomeContects from "./Pages/HomeContects.jsx";
+import { ToastContainer } from "react-toastify";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -37,9 +38,10 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-    <>
+    <div>
+      <ToastContainer />
       <RouterProvider router={router}></RouterProvider>
-    </>
+    </div>
   );
 }
 

@@ -11,7 +11,8 @@ import {
   FaSignOutAlt,
 } from "react-icons/fa";
 import { Link, useLocation } from "react-router-dom";
-import { getAuth, onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
+import { toast, Bounce } from "react-toastify";
 
 const HomeLeft = () => {
   const db = getDatabase();
@@ -61,13 +62,30 @@ const HomeLeft = () => {
         } else {
           console.log("File uploaded", files[0].fileUrl);
           const userDbRef = ref(db, `users/${Usersinfo.userKey}`);
-          update(userDbRef, { profile_picture: files[0].fileUrl });
+          update(userDbRef, { profile_picture: files[0].fileUrl }).then(() => {
+            updateProfile(auth.currentUser, {
+              photoURL: files[0].fileUrl,
+            }).then(() => {
+              toast.success("🦄 PhotoUrl updated db", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+              });
+            });
+          });
         }
       })
       .catch((err) => {
-        console.error(err);
+        console.log(err);
       });
   };
+  console.log(auth.currentUser.photoURL);
 
   return (
     <>

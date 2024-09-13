@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import Friend from "../../../assets/Home/friend1.gif";
 import Friend2 from "../../../assets/Home/friend3.gif";
 import Friend3 from "../../../assets/Home/friend2.gif";
 import Friend4 from "../../../assets/Home/friend1.gif";
+import { getDatabase, ref, onValue, set, push } from "firebase/database";
 
 const Friends = () => {
+  const db = getDatabase();
   const friends = [
     {
       id: 1,
@@ -48,6 +50,19 @@ const Friends = () => {
       active: false,
     },
   ];
+  /**
+   * todo: fetch data from friends
+   *
+   * */
+  useEffect(() => {
+    const FriendsDbRef = ref(db, "Friends/");
+    onValue(FriendsDbRef, (snapshot) => {
+      snapshot.forEach((items) => {
+        console.log(items.val());
+      });
+    });
+  }, []);
+
   return (
     <div>
       <div className="h-[451px] w-[344px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]">

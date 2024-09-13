@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import Userlist1 from "../../../assets/Home/Userslist/userlist1.jpg";
-
 import { getDatabase, ref, onValue, set, push } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
@@ -30,7 +29,7 @@ const UserList = () => {
       });
       setuserlist(userArrey);
     });
-  }, []);
+  }, [db]);
   // User lisr dekhabe kinto nijeke dekhabena ai kaj End
 
   /**
@@ -44,6 +43,9 @@ const UserList = () => {
       senderemail: auth.currentUser.email,
       SenderName: auth.currentUser.displayName,
       SenderUserKey: RecentcurrentUser.userKey,
+      profile_picture: auth.currentUser.photoURL
+        ? auth.currentUser.photoURL
+        : { Userlist1 },
       reciverUid: items.uid,
       reciverEmail: items.email,
       reciverName: items.displayName,
@@ -133,7 +135,7 @@ const UserList = () => {
                         className="rounded-[5px] bg-ThemeColor px-[5px] font-Poppins text-[20px] font-semibold text-[#fff]"
                         onClick={() => HandleFriendRequest(items)}
                       >
-                        {items.button ? "Add" : "Add"}
+                        Add
                       </button>
                     )}
                   </div>
