@@ -51,27 +51,31 @@ const UserList = () => {
       reciverName: items.displayName,
       reciverUserkey: items.userKey,
       createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
-    })
-      // extra from chat gtp=======
-      .then(() => {
-        // Update the local state immediately after sending the request
-        setfriendReqUser((prev) => [...prev, auth.currentUser.uid + items.uid]);
-      })
-      .catch((error) => {
-        console.error("Error sending friend request: ", error);
-      });
+    });
+    // extra from chat gtp=======
+    // .then(() => {
+    //   // Update the local state immediately after sending the request
+    //   setfriendReqUser((prev) => [...prev, auth.currentUser.uid + items.uid]);
+    // })
+    // .catch((error) => {
+    //   console.error("Error sending friend request: ", error);
+    // });
   };
 
   useEffect(() => {
     const FriendReqUserDbRef = ref(db, "FriendRequest/");
-    let friendrequestDb = [];
     onValue(FriendReqUserDbRef, (snapshot) => {
+      let friendrequestDb = [];
       snapshot.forEach((items) => {
         friendrequestDb.push(items.val().senderUid + items.val().reciverUid);
       });
       setfriendReqUser(friendrequestDb);
     });
   }, []);
+
+  /**
+   * *There is a issue with depandancy big issue with real time update make it blank
+   * */
 
   const formattedDate = moment("2024-09-13T16:30:21").format(
     "MMMM Do YYYY, h:mm:ss a",
@@ -93,7 +97,7 @@ const UserList = () => {
           {/* Parent with divide-y class */}
           <div className="h-[403px] divide-y divide-[rgba(0,0,0,0.25)] overflow-y-scroll">
             {/* Group Section 1 */}
-            {userlist.length > 0 ? (
+            {userlist?.length > 0 ? (
               userlist.map((items) => (
                 <div
                   className="flex items-center justify-between py-3.5 pl-[20px] pr-[39px] pt-[17px]"

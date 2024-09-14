@@ -1,7 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import Request from "../../../assets/Home/Userslist/userlist4.jpg";
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  remove,
+} from "firebase/database";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
 
@@ -34,7 +41,21 @@ const FriendRequest = () => {
   const HandleReqAceept = (items) => {
     set(push(ref(db, "Friends/")), {
       ...items,
+      createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+    }).then(() => {
+      const friendReqDbRef = ref(db, `FriendRequest/${items.friendReqKey}`);
+      remove(friendReqDbRef);
     });
+  };
+
+  /**
+   * todo: Friend Request Cancel Functionality
+   * @param ({items})
+   * */
+
+  const HandleReqCancel = (items) => {
+    const friendReqDbRef = ref(db, `FriendRequest/${items.friendReqKey}`);
+    remove(friendReqDbRef);
   };
 
   return (
@@ -60,13 +81,13 @@ const FriendRequest = () => {
                         <img
                           src={items.profile_picture}
                           alt={items.profile_picture}
-                          className="h-[70px] w-[70px] rounded-full"
+                          className="h-[60px] w-[60px] rounded-full"
                         />
                       </picture>
                     </div>
 
                     <div>
-                      <h3 className="font-Poppins text-[18px] font-semibold">
+                      <h3 className="font-Poppins text-[16px] font-semibold">
                         {items.SenderName}
                       </h3>
                       <p className="font-Poppins text-[14px] font-medium text-[rgba(77,77,77,0.73)]">
@@ -76,15 +97,16 @@ const FriendRequest = () => {
                   </div>
                   <div className="flex items-center gap-x-4">
                     <button
-                      className="rounded-md bg-ThemeColor px-3 py-2 font-bold text-white transition-all hover:bg-gradient-to-l hover:from-[#134E5E] hover:to-[#71B280]"
-                      onClick={() => {
-                        HandleReqAceept(items);
-                      }}
+                      className="rounded-md bg-ThemeColor px-3 py-2 text-[14px] font-bold text-white transition-all hover:bg-gradient-to-l hover:from-[#134E5E] hover:to-[#71B280]"
+                      onClick={() => HandleReqAceept(items)}
                     >
                       Accept
                     </button>
 
-                    <button className="rounded-md bg-gradient-to-r from-[#ff6767] to-[#f80778] px-3 py-2 font-bold text-white transition-all hover:bg-gradient-to-l hover:from-[#f96363] hover:to-[#d43394]">
+                    <button
+                      className="rounded-md bg-gradient-to-r from-[#ff6767] to-[#f80778] px-3 py-2 text-[14px] font-bold text-white transition-all hover:bg-gradient-to-l hover:from-[#f96363] hover:to-[#d43394]"
+                      onClick={() => HandleReqCancel(items)}
+                    >
                       Cancel
                     </button>
                   </div>

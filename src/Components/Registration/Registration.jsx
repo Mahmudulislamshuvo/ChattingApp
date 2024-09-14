@@ -243,7 +243,7 @@ const Registration = () => {
               >
                 {loading && (
                   <svg
-                    class="... absolute left-[30%] top-[35%] mr-3 h-5 w-5 animate-spin rounded-full border-4 border-b-red-600 border-t-red-200"
+                    className="... absolute left-[30%] top-[35%] mr-3 h-5 w-5 animate-spin rounded-full border-4 border-b-red-600 border-t-red-200"
                     viewBox="0 0 24 24"
                   ></svg>
                 )}

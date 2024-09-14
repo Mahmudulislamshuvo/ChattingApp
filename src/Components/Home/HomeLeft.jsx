@@ -85,7 +85,6 @@ const HomeLeft = () => {
         console.log(err);
       });
   };
-  console.log(auth.currentUser.photoURL);
 
   return (
     <>
