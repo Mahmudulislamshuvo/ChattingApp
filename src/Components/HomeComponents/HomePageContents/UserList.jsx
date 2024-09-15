@@ -4,6 +4,8 @@ import Userlist1 from "../../../assets/Home/Userslist/userlist1.jpg";
 import { getDatabase, ref, onValue, set, push } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
+import { FaUserFriends } from "react-icons/fa";
+import { toast, Slide } from "react-toastify";
 
 const UserList = () => {
   const auth = getAuth();
@@ -12,6 +14,7 @@ const UserList = () => {
   const [userlist, setuserlist] = useState([]);
   const [RecentcurrentUser, setRecentcurrentUser] = useState({});
   const [friendReqUser, setfriendReqUser] = useState([]);
+  const [isfrined, setisfrined] = useState([]);
   // All state End
   // User lisr dekhabe kinto nijeke dekhabena ai kaj
   useEffect(() => {
@@ -45,22 +48,31 @@ const UserList = () => {
       SenderUserKey: RecentcurrentUser.userKey,
       profile_picture: auth.currentUser.photoURL
         ? auth.currentUser.photoURL
-        : { Userlist1 },
+        : Userlist1,
       reciverUid: items.uid,
       reciverEmail: items.email,
       reciverName: items.displayName,
       reciverUserkey: items.userKey,
       createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+    }).then(() => {
+      toast.success(`Friend Request sent`, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "colored",
+        transition: Slide,
+      });
     });
-    // extra from chat gtp=======
-    // .then(() => {
-    //   // Update the local state immediately after sending the request
-    //   setfriendReqUser((prev) => [...prev, auth.currentUser.uid + items.uid]);
-    // })
-    // .catch((error) => {
-    //   console.error("Error sending friend request: ", error);
-    // });
   };
+
+  /**
+   * todo: Fetch data from frind request
+   * @params ({})
+   **/
 
   useEffect(() => {
     const FriendReqUserDbRef = ref(db, "FriendRequest/");
@@ -77,9 +89,23 @@ const UserList = () => {
    * *There is a issue with depandancy big issue with real time update make it blank
    * */
 
-  const formattedDate = moment("2024-09-13T16:30:21").format(
-    "MMMM Do YYYY, h:mm:ss a",
-  );
+  /**
+   * todo: Fetch data from frinds and set a icon on add btn
+   * @params ({})
+   **/
+
+  useEffect(() => {
+    const FriendsDbRef = ref(db, "Friends/");
+    onValue(FriendsDbRef, (snapshot) => {
+      let friendsDbBlankArr = [];
+      snapshot.forEach((items) => {
+        friendsDbBlankArr.push(
+          items.val().senderUid + items.val().reciverUserkey,
+        );
+      });
+      setisfrined(friendsDbBlankArr);
+    });
+  }, []);
 
   return (
     <>
@@ -128,9 +154,13 @@ const UserList = () => {
                     </div>
                   </div>
                   <div>
-                    {friendReqUser.includes(
-                      auth.currentUser.uid + items.uid,
-                    ) ? (
+                    {isfrined.includes(auth.currentUser.uid + items.userKey) ? (
+                      <button className="rounded-[5px] bg-ThemeColor px-[8px] py-[5px] font-Poppins text-[20px] font-semibold text-[#fff]">
+                        <FaUserFriends className="animate-pulse" />
+                      </button>
+                    ) : friendReqUser.includes(
+                        auth.currentUser.uid + items.uid,
+                      ) ? (
                       <button className="rounded-[5px] bg-ThemeColor px-[5px] font-Poppins text-[20px] font-semibold text-[#fff]">
                         Sent
                       </button>

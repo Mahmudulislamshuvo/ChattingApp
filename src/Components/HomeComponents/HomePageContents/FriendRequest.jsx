@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
-import Request from "../../../assets/Home/Userslist/userlist4.jpg";
+import Request from "../../../assets/Home/Userslist/userlist3.jpg";
+import Userlist1 from "../../../assets/Home/Userslist/userlist1.jpg";
 import {
   getDatabase,
   ref,
@@ -11,6 +12,7 @@ import {
 } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
+import { toast, Slide } from "react-toastify";
 
 const FriendRequest = () => {
   const db = getDatabase();
@@ -42,10 +44,24 @@ const FriendRequest = () => {
     set(push(ref(db, "Friends/")), {
       ...items,
       createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
-    }).then(() => {
-      const friendReqDbRef = ref(db, `FriendRequest/${items.friendReqKey}`);
-      remove(friendReqDbRef);
-    });
+    })
+      .then(() => {
+        const friendReqDbRef = ref(db, `FriendRequest/${items.friendReqKey}`);
+        remove(friendReqDbRef);
+      })
+      .then(() => {
+        toast.success(`You accepted ${items.SenderName}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+      });
   };
 
   /**
@@ -56,6 +72,17 @@ const FriendRequest = () => {
   const HandleReqCancel = (items) => {
     const friendReqDbRef = ref(db, `FriendRequest/${items.friendReqKey}`);
     remove(friendReqDbRef);
+    toast.success(`You Canceled ${items.SenderName} friend Request`, {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "colored",
+      transition: Slide,
+    });
   };
 
   return (
@@ -79,8 +106,16 @@ const FriendRequest = () => {
                     <div className="rounded-1/2 mr-[13px]">
                       <picture>
                         <img
-                          src={items.profile_picture}
-                          alt={items.profile_picture}
+                          src={
+                            items.profile_picture
+                              ? items.profile_picture
+                              : Userlist1
+                          }
+                          alt={
+                            items.profile_picture
+                              ? items.profile_picture
+                              : Userlist1
+                          }
                           className="h-[60px] w-[60px] rounded-full"
                         />
                       </picture>

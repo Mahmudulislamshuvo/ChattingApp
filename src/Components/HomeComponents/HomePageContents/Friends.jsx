@@ -17,17 +17,23 @@ const Friends = () => {
    *
    * */
   useEffect(() => {
+    let currentUid = auth.currentUser.uid;
     const FriendsDbRef = ref(db, "Friends/");
     onValue(FriendsDbRef, (snapshot) => {
       let friendsBalnkArr = [];
       snapshot.forEach((items) => {
-        if (items.senderUid === auth.currentUser.uid) {
-          friendsBalnkArr.push({ ...items.val(), FrendsKey: items.key });
-        }
+        friendsBalnkArr.push({
+          ...items.val(),
+          friendsKey: items.key,
+        });
       });
-      setfriends(friendsBalnkArr);
+      setfriends(() => {
+        return friendsBalnkArr.filter(
+          (items) => items.reciverUid === currentUid,
+        );
+      });
     });
-  }, []);
+  }, [auth.currentUser.uid, db]);
 
   return (
     <div>
