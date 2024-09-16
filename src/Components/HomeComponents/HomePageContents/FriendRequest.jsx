@@ -91,7 +91,15 @@ const FriendRequest = () => {
         <div className="pt-[13px]">
           <div className="flex w-[90] items-center justify-between text-wrap text-center">
             <h3 className="pl-[20px] font-Poppins text-[20px] font-semibold text-[#000]">
-              Friend request
+              <button
+                type="button"
+                class="relative inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white"
+              >
+                Friend request
+                <div class="absolute -end-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-green-500 text-xs font-bold text-white dark:border-gray-900">
+                  {friendReqList.length > 0 ? friendReqList.length : 0}
+                </div>
+              </button>
             </h3>
             <span>
               <HiDotsVertical className="cursor-pointer text-2xl text-ThemeColor" />

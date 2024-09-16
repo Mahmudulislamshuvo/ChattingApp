@@ -1,9 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import Friend from "../../../assets/Home/friend1.gif";
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  remove,
+} from "firebase/database";
 import moment from "moment";
 import { getAuth } from "firebase/auth";
+import { toast, Slide } from "react-toastify";
 
 const Friends = () => {
   const auth = getAuth();
@@ -34,6 +42,47 @@ const Friends = () => {
       });
     });
   }, [auth.currentUser.uid, db]);
+
+  /**
+   * todo: blocked users
+   *
+   * */
+
+  /**
+   * todo: Block functionality implimentation
+   * @params ({items})
+   * */
+
+  const Handleblock = (items) => {
+    set(push(ref(db, "Block/")), {
+      blockbyName: auth.currentUser.displayName,
+      blockbyUid: auth.currentUser.uid,
+      blockbyEmail: auth.currentUser.email,
+      blockby_profile_picture: auth.currentUser.photoURL,
+      whoblockedUip: items.senderUid,
+      whoblockedName: items.SenderName,
+      whoblockedEmail: items.senderemail,
+      whoblocked_profile_picture: items.profile_picture,
+      createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+    })
+      .then(() => {
+        const friendsDbref = ref(db, `Friends/` + items.friendsKey);
+        remove(friendsDbref);
+      })
+      .then(() => {
+        toast.warn(`Blocked ${items.SenderName}`, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          transition: Slide,
+        });
+      });
+  };
 
   return (
     <div>
@@ -98,10 +147,17 @@ const Friends = () => {
                       </p>
                     </div>
                   </div>
-                  <div>
-                    <p className="font-Poppins text-[10px] font-medium text-[rgba(0,0,0,0.51)]">
+                  <div className="text-center">
+                    <p className="pb-1 font-Poppins text-[13px] font-medium text-[rgba(0,0,0,0.51)]">
                       {moment(items.createdDate).fromNow()}
                     </p>
+                    <button
+                      type="button"
+                      className="relative inline-flex items-center rounded-lg bg-gradient-to-r from-ThemeColor to-[#4a5dab] px-3 py-2 text-sm font-medium text-white"
+                      onClick={() => Handleblock(items)}
+                    >
+                      Block
+                    </button>
                   </div>
                 </div>
               ))
