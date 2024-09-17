@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App.jsx";
 import "./index.css";
-import { app } from "../src/DatabaseConfigaration/FirebaseConnect.js";
+import { app, storage } from "../src/DatabaseConfigaration/FirebaseConnect.js";
 import "react-toastify/dist/ReactToastify.css";
 
 createRoot(document.getElementById("root")).render(

@@ -48,6 +48,7 @@ const MyGroups = () => {
       active: false,
     },
   ];
+
   return (
     <>
       <div className="h-[462px] w-[344px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]">
@@ -56,6 +57,7 @@ const MyGroups = () => {
             <h3 className="pl-[20px] font-Poppins text-[20px] font-semibold text-[#000]">
               My Groups
             </h3>
+
             <span>
               <HiDotsVertical className="cursor-pointer text-2xl text-ThemeColor" />
             </span>

@@ -42,7 +42,6 @@ const BlockUsers = () => {
       // return filterItems;
     });
   }, []);
-  console.log(blocklist);
 
   /**
    * todo: Unblock finctionality implimentation
