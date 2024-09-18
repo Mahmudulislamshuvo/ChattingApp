@@ -1,5 +1,4 @@
-import React, { useState, createRef } from "react";
-import { HiDotsVertical } from "react-icons/hi";
+import React, { useState, createRef, useEffect } from "react";
 import HomeContentOne from "../../../assets/Home/one.png";
 import HomeContentTwo from "../../../assets/Home/two.png";
 import HomeContentThree from "../../../assets/Home/three.png";
@@ -22,14 +21,28 @@ const customStyles = {
 };
 import Cropper from "react-cropper";
 import "cropperjs/dist/cropper.css";
+import { getDatabase, ref, set, push, onValue } from "firebase/database";
+import { getAuth } from "firebase/auth";
+import { v4 as uuidv4 } from "uuid";
+import { firetoastsuccess, firetoasterror } from "../../../Helper/Utils";
+import {
+  getStorage,
+  ref as dbref,
+  uploadBytesResumable,
+  getDownloadURL,
+  uploadString,
+} from "firebase/storage";
+import moment from "moment";
 
 const defaultSrc =
   "https://raw.githubusercontent.com/roadmanfong/react-cropper/master/example/img/child.jpg";
 
 const GroupList = () => {
+  const db = getDatabase();
+  const auth = getAuth();
+  const storage = getStorage();
   // Cropper States
   const [image, setImage] = useState(defaultSrc);
-  const [cropData, setCropData] = useState("#");
   const cropperRef = createRef();
   // Cropper State
   // Copper things
@@ -47,14 +60,19 @@ const GroupList = () => {
     };
     reader.readAsDataURL(files[0]);
   };
-  console.log(image);
-  console.log(cropData);
+  // Copper things end
 
   const getCropData = () => {
     if (typeof cropperRef.current?.cropper !== "undefined") {
-      setCropData(cropperRef.current?.cropper.getCroppedCanvas().toDataURL());
+      setGroupinfo({
+        groupName: "",
+        groupTagName: "",
+      });
     }
   };
+
+  // console.log("This is crop Data", cropData);
+
   // Copper things end
   const users = [
     {
@@ -103,18 +121,133 @@ const GroupList = () => {
   function closeModal() {
     setIsOpen(false);
   }
-
-  // Modal codes end
-
   const handleopenModal = () => {
     openModal();
   };
+  // Modal codes end
+  /**
+   * *All My States Start
+   * */
+  const [Groupinfo, setGroupinfo] = useState({
+    groupName: "",
+    groupTagName: "",
+  });
+  const [inputErr, setinputErr] = useState({
+    groupNameError: "",
+    groupTagNameError: "",
+  });
+  const [loading, setloading] = useState(false);
+  const [AllgroupList, setAllgroupList] = useState([]);
+  /**
+   * *All My States End
+   * */
+
+  /**
+   * todo: fetch data from db and show on GroupList
+   * @perams ({})
+   * */
+  useEffect(() => {
+    const GroupsDbRef = ref(db, "GroupList/");
+    onValue(GroupsDbRef, (snapshot) => {
+      let groupsBalnkArr = [];
+      snapshot.forEach((items) => {
+        groupsBalnkArr.push({
+          ...items.val(),
+          GroupKey: items.key,
+        });
+      });
+      setAllgroupList(groupsBalnkArr);
+    });
+  }, []);
+
+  /**
+   * todo: Handle Create Group Button
+   * @params ({})
+   * */
+  const HandleCreateGroupBtn = () => {
+    const { groupName, groupTagName } = Groupinfo;
+    let errors = {};
+    if (!groupName) {
+      errors.groupNameError = "Group Name is required!";
+    }
+    if (!groupTagName) {
+      errors.groupTagNameError = "Group Tag Name is required!";
+    }
+    setinputErr(errors);
+    // If no errors, proceed further (e.g., send data)
+    if (Object.keys(errors).length === 0) {
+      console.log("Form submitted successfully");
+    }
+    setloading(true);
+    const storageRef = dbref(storage, `GroupList/Imege${uuidv4()}`);
+    const message4 = cropperRef.current?.cropper.getCroppedCanvas().toDataURL();
+    uploadString(storageRef, message4, "data_url")
+      .then((snapshot) => {
+        console.log("Uploaded a data_url string!", snapshot);
+      })
+      .then(() => {
+        getDownloadURL(storageRef).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          set(push(ref(db, "GroupList/")), {
+            GroupName: groupName,
+            GroupTagName: groupTagName,
+            GroupPhoto: downloadURL,
+            AdminName: auth.currentUser.displayName,
+            AdminEmail: auth.currentUser.email,
+            AdminPhoto: auth.currentUser.photoURL,
+            AdminUid: auth.currentUser.uid,
+            createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+          });
+        });
+      })
+      .then(() => {
+        firetoastsuccess("Group Ceate Succesfull", "top-right", 4000);
+        setloading(false);
+      })
+      .finally(() => {
+        setGroupinfo({
+          groupName: "",
+          groupTagName: "",
+        });
+        setImage("");
+        closeModal();
+      })
+      .catch((err) => {
+        firetoasterror(err.message, "top-right", 4000);
+      });
+  };
+
+  /**
+   * todo: Handle Group Create Inputs
+   * @params ({event})
+   * */
+  const HandleInput = (event) => {
+    const { id, value } = event.target;
+    setGroupinfo({
+      ...Groupinfo,
+      [id]: value,
+    });
+    // Clear error dynamically when input is valid
+    setinputErr({
+      ...inputErr,
+      [`${id}Error`]: value ? "" : inputErr[`${id}Error`], // Clear error if value exists
+    });
+  };
+
   return (
     <div className="max-h-[450px] w-[427px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]">
       <div className="pt-[13px]">
         <div className="flex w-[90] items-center justify-between text-wrap text-center">
           <h3 className="pl-[20px] font-Poppins text-[20px] font-semibold text-[#000]">
-            Groups List
+            <button
+              type="button"
+              class="relative inline-flex items-center rounded-lg bg-blue-700 px-5 py-2.5 text-center text-sm font-medium text-white"
+            >
+              Groups List
+              <div class="absolute -end-2 -top-2 inline-flex h-6 w-6 items-center justify-center rounded-full border-2 border-white bg-green-500 text-xs font-bold text-white dark:border-gray-900">
+                {AllgroupList.length > 0 ? AllgroupList.length : 0}
+              </div>
+            </button>
           </h3>
           <button
             onClick={handleopenModal}
@@ -131,30 +264,44 @@ const GroupList = () => {
         {/* Parent with divide-y class */}
         <div className="h-[400px] divide-y divide-[rgba(0,0,0,0.25)] overflow-y-scroll">
           {/* Group Section 1 */}
-          {users?.map((items) => (
-            <div className="flex items-center justify-between py-3.5 pl-[20px] pr-[39px] pt-[17px]">
-              <div className="flex items-center">
-                <div className="rounded-1/2 mr-[13px] h-[70] w-[70]">
-                  <picture>
-                    <img src={items.imege} alt="" />
-                  </picture>
+          {AllgroupList.length > 0 ? (
+            AllgroupList?.map((items) => (
+              <div className="flex items-center justify-between py-3.5 pl-[20px] pr-[39px] pt-[17px]">
+                <div className="flex items-center">
+                  <div className="relative mr-[13px]">
+                    <picture>
+                      <img
+                        src={
+                          items.GroupPhoto ? items.GroupPhoto : HomeContentOne
+                        }
+                        alt={
+                          items.GroupPhoto ? items.GroupPhoto : HomeContentOne
+                        }
+                        className="h-[60px] w-[60px] rounded-full"
+                      />
+                    </picture>
+                  </div>
+
+                  <div>
+                    <h3 className="font-Poppins text-[18px] font-semibold">
+                      {items.GroupName}
+                    </h3>
+                    <p className="font-Poppins text-[14px] font-medium text-[rgba(77,77,77,0.73)]">
+                      {items.GroupTagName}
+                    </p>
+                  </div>
                 </div>
 
-                <div>
-                  <h3 className="font-Poppins text-[18px] font-semibold">
-                    {items.tittle}
-                  </h3>
-                  <p className="font-Poppins text-[14px] font-medium text-[rgba(77,77,77,0.73)]">
-                    {items.description}
-                  </p>
-                </div>
+                <button className="rounded-[5px] bg-ThemeColor px-[14px] py-[1px] font-Poppins text-[18px] font-semibold text-[#fff]">
+                  Join
+                </button>
               </div>
-
-              <button className="rounded-[5px] bg-ThemeColor px-[22px] font-Poppins text-[20px] font-semibold text-[#fff]">
-                {items.button}
-              </button>
+            ))
+          ) : (
+            <div className="flex items-center justify-center">
+              <h3 className="h-full pt-[50%]">No user found</h3>
             </div>
-          ))}
+          )}
         </div>
       </div>
       {/* Modal Start */}
@@ -167,7 +314,7 @@ const GroupList = () => {
           >
             <button
               onClick={closeModal}
-              className="bg-red mb-2 flex h-[40px] w-[40px] items-center justify-center rounded-full text-[35px] text-white"
+              className="mb-2 flex h-[40px] w-[40px] items-center justify-center rounded-full bg-black text-[35px] text-white"
             >
               <IoClose />
             </button>
@@ -179,7 +326,7 @@ const GroupList = () => {
 
               <div className="mb-7">
                 <label
-                  htmlFor="email"
+                  htmlFor="groupName"
                   className="text-darkBlue mb-2 flex text-[20px] font-semibold capitalize"
                 >
                   Group name <span className="text-red">*</span>
@@ -190,23 +337,21 @@ const GroupList = () => {
                   id="groupName"
                   name="groupName"
                   autoComplete="off"
+                  value={Groupinfo.groupName}
                   className="border-darkBlue w-full rounded-md border-2 border-opacity-30 px-[20px] py-[15px] text-[15px] focus:outline-none"
-                  // onChange={handleInput}
+                  onChange={HandleInput}
                 />
-                {/* {allInputError.GroupNameErr && (
-                  <span
-                    className="ms-2 mt-2 inline-block font-normal text-[red]"
-                    id="GroupNameErr"
-                  >
-                    {allInputError.GroupNameErr}
+                {inputErr.groupNameError && (
+                  <span className="ms-2 mt-2 inline-block font-Nunito font-semibold text-red-500">
+                    {inputErr.groupNameError}
                   </span>
-                )} */}
+                )}
               </div>
               {/* =========== group tag name input =============== */}
 
               <div className="mb-7">
                 <label
-                  htmlFor="email"
+                  htmlFor="groupTagName"
                   className="text-darkBlue mb-2 flex text-[20px] font-semibold capitalize"
                 >
                   Group Tagname <span className="text-red">*</span>
@@ -216,30 +361,33 @@ const GroupList = () => {
                   placeholder="Group TagName"
                   id="groupTagName"
                   name="groupTagName"
+                  value={Groupinfo.groupTagName}
                   autoComplete="off"
                   className="border-darkBlue w-full rounded-md border-2 border-opacity-30 px-[20px] py-[15px] text-[15px] focus:outline-none"
-                  // onChange={handleInput}
+                  onChange={HandleInput}
                 />
-                {/* {allInputError.GroupTagNameErr && (
-                  <span
-                    className="ms-2 mt-2 inline-block font-normal text-[red]"
-                    id="GroupTagNameErr"
-                  >
-                    {allInputError.GroupTagNameErr}
+                {inputErr.groupTagNameError && (
+                  <span className="ms-2 mt-2 inline-block font-Nunito font-semibold text-red-500">
+                    {inputErr.groupTagNameError}
                   </span>
-                )} */}
+                )}
               </div>
               {/* =========== image croper input =============== */}
               <div className="flex justify-between">
                 <div className="w-[40%]">
-                  <input type="file" onChange={onChange} />
+                  <input
+                    id="GroupPhoto"
+                    name="GroupPhoto"
+                    type="file"
+                    onChange={onChange}
+                  />
                 </div>
                 <div className="flex w-[44%] justify-between">
                   <h3 className="font-open font-semibold capitalize">
                     Image preview
                   </h3>
                   <button
-                    className="bg-btnColor relative inline-flex items-center rounded-lg px-3 py-1 text-center text-[17px] font-medium text-white"
+                    className="relative inline-flex items-center rounded-lg bg-ThemeColor px-3 py-1 text-center text-[17px] font-medium text-white"
                     onClick={getCropData}
                   >
                     Crop Image
@@ -278,13 +426,10 @@ const GroupList = () => {
 
               <button
                 type="submit"
-                className="bg-btnColor font-nunito relative w-full rounded-lg py-4 text-center text-[20px] text-base font-semibold capitalize text-white"
-                // onClick={handleCreatGroup}
+                className="font-nunito relative w-full rounded-lg bg-ThemeColor py-4 text-center text-[20px] text-base font-semibold capitalize text-white"
+                onClick={HandleCreateGroupBtn}
               >
-                Creat group
-                {/* {loading && (
-                  <div className="border-b-gray border-r-gray absolute left-[40%] top-[33%] h-5 w-5 animate-spin rounded-full border-[3.5px] border-l-white border-t-white bg-transparent"></div>
-                )} */}
+                {loading ? "Loading...." : "Creat group"}
               </button>
             </form>
           </Modal>
