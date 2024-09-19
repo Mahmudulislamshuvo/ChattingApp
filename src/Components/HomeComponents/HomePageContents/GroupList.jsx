@@ -71,46 +71,7 @@ const GroupList = () => {
     }
   };
 
-  // console.log("This is crop Data", cropData);
-
   // Copper things end
-  const users = [
-    {
-      id: 1,
-      imege: HomeContentOne,
-      tittle: "Friends Reunion",
-      description: "Hi Guys, Wassup!",
-      button: "Join",
-    },
-    {
-      id: 2,
-      imege: HomeContentTwo,
-      tittle: "Friends Forever",
-      description: "Good to see you.",
-      button: "Join",
-    },
-    {
-      id: 3,
-      imege: HomeContentThree,
-      tittle: "Crazy Cousins",
-      description: "What plans today?",
-      button: "Join",
-    },
-    {
-      id: 4,
-      imege: HomeContentFour,
-      tittle: "Tech",
-      description: "Hi Guys, Welcome",
-      button: "Join",
-    },
-    {
-      id: 5,
-      imege: HomeContentFive,
-      tittle: "EsMern 2306",
-      description: "Welcome to Torture cell",
-      button: "Join",
-    },
-  ];
 
   // Modal codes start
   const [modalIsOpen, setIsOpen] = useState(false);
@@ -138,6 +99,7 @@ const GroupList = () => {
   });
   const [loading, setloading] = useState(false);
   const [AllgroupList, setAllgroupList] = useState([]);
+  const [GroupData, setGroupData] = useState([]);
   /**
    * *All My States End
    * */
@@ -234,6 +196,35 @@ const GroupList = () => {
     });
   };
 
+  /**
+   * todo: Grouplist join Handle Send request to Group for join
+   * @params ({items})
+   * */
+  const HandleJoin = (items) => {
+    set(push(ref(db, "GroupRequest/")), {
+      ...items,
+      whoJoiningUid: auth.currentUser.uid,
+      whojoiningName: auth.currentUser.displayName,
+      whojoiningPhoto: auth.currentUser.photoURL,
+      createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+    }).then(() => {
+      firetoastsuccess(`Request Sent to ${items.GroupName}`);
+    });
+  };
+
+  useEffect(() => {
+    const GroupsListDbRef = ref(db, "GroupRequest/");
+    onValue(GroupsListDbRef, (snapshot) => {
+      let groupsBalnkArr = [];
+      snapshot.forEach((items) => {
+        if (items.val().whoJoiningUid === auth.currentUser.uid) {
+          groupsBalnkArr.push(items.val().whoJoiningUid + items.val().GroupKey);
+        }
+      });
+      setGroupData(groupsBalnkArr);
+    });
+  }, [auth.currentUser.uid, db]);
+
   return (
     <div className="max-h-[450px] w-[427px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]">
       <div className="pt-[13px]">
@@ -266,7 +257,7 @@ const GroupList = () => {
           {/* Group Section 1 */}
           {AllgroupList.length > 0 ? (
             AllgroupList?.map((items) => (
-              <div className="flex items-center justify-between py-3.5 pl-[20px] pr-[39px] pt-[17px]">
+              <div className="flex items-center justify-between py-3.5 pl-[20px] pr-[20px] pt-[17px]">
                 <div className="flex items-center">
                   <div className="relative mr-[13px]">
                     <picture>
@@ -292,8 +283,13 @@ const GroupList = () => {
                   </div>
                 </div>
 
-                <button className="rounded-[5px] bg-ThemeColor px-[14px] py-[1px] font-Poppins text-[18px] font-semibold text-[#fff]">
-                  Join
+                <button
+                  className="rounded-[5px] bg-ThemeColor px-[14px] py-[1px] font-Poppins text-[18px] font-semibold text-[#fff]"
+                  onClick={() => HandleJoin(items)}
+                >
+                  {GroupData.includes(auth.currentUser.uid + items.GroupKey)
+                    ? "Pending"
+                    : "Join"}
                 </button>
               </div>
             ))

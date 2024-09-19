@@ -134,7 +134,7 @@ const UserList = () => {
             {userlist?.length > 0 ? (
               userlist.map((items) => (
                 <div
-                  className="flex items-center justify-between py-3.5 pl-[20px] pr-[39px] pt-[17px]"
+                  className="flex items-center justify-between py-3.5 pl-[20px] pr-[20px] pt-[17px]"
                   key={items.id}
                 >
                   <div className="flex items-center">

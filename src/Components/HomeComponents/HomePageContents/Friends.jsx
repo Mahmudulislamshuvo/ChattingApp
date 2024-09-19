@@ -110,7 +110,7 @@ const Friends = () => {
             {/* Group Section 1 */}
             {friends.length > 0 ? (
               friends?.map((items) => (
-                <div className="flex items-center justify-between py-3.5 pl-[20px] pr-[39px] pt-[17px]">
+                <div className="flex items-center justify-between py-3.5 pl-[20px] pr-[20px] pt-[17px]">
                   <div className="flex items-center">
                     <div className="relative mr-[13px]">
                       <picture>
