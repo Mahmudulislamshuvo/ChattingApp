@@ -13,7 +13,7 @@ import moment from "moment";
 import { getAuth } from "firebase/auth";
 import { toast, Slide } from "react-toastify";
 
-const Friends = () => {
+const Friends = ({ ischat = false }) => {
   const auth = getAuth();
   const db = getDatabase();
 
@@ -86,7 +86,9 @@ const Friends = () => {
 
   return (
     <div>
-      <div className="h-[451px] w-[344px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]">
+      <div
+        className={`${ischat ? `w-[427px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]` : `h-[451px] w-[344px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]`}`}
+      >
         <div className="pt-[13px]">
           <div className="flex w-[90] items-center justify-between text-wrap text-center">
             <h3 className="pl-[20px] font-Poppins text-[20px] font-semibold text-[#000]">
