@@ -207,9 +207,18 @@ const GroupList = () => {
       whojoiningName: auth.currentUser.displayName,
       whojoiningPhoto: auth.currentUser.photoURL,
       createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
-    }).then(() => {
-      firetoastsuccess(`Request Sent to ${items.GroupName}`);
-    });
+    })
+      .then(() => {
+        firetoastsuccess(`Request Sent to ${items.GroupName}`);
+      })
+      .then(() => {
+        set(push(ref(db, "Notifications/")), {
+          notificationName: items.GroupName,
+          notificationPhoto: items.GroupPhoto,
+          notificationMsg: `You Requested to join ${items.GroupName}`,
+          createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+        });
+      });
   };
 
   useEffect(() => {

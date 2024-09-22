@@ -1,12 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { HiDotsVertical } from "react-icons/hi";
 import Friend from "../../../assets/Home/friend1.gif";
-import { getDatabase, ref, onValue, set, push } from "firebase/database";
+import {
+  getDatabase,
+  ref,
+  onValue,
+  set,
+  push,
+  remove,
+} from "firebase/database";
 import moment from "moment";
 import { getAuth } from "firebase/auth";
 import ReactDOM from "react-dom";
 import Modal from "react-modal";
 import { IoClose } from "react-icons/io5";
+import { firetoasterror, firetoastsuccess } from "../../../Helper/Utils";
 
 /**
  * todo: Modal import and Common css
@@ -99,6 +107,62 @@ const MyGroups = () => {
       setgroupReq(groupsReqBalnkArr);
     });
   }, [auth.currentUser.uid, db]);
+
+  /**
+   * todo: Handle Group Req Rejeect button with send some data to notifications
+   * @params ({item})
+   * */
+  const GroupReqReject = (items) => {
+    remove(ref(db, "GroupRequest/" + items.GroupRequestKey), {}).then(() => {
+      set(push(ref(db, "Notifications/")), {
+        notificationName: items.GroupName,
+        notificationPhoto: items.GroupPhoto,
+        notificationMsg: `${items.GroupName} Rejected your Request`,
+        createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+      }).then(() => {
+        firetoasterror(`Decline ${items.whojoiningName} Request`);
+      });
+    });
+    // From ChatGtp worked well
+    let updatedGroupRequestItem = GroupRequestItem.filter(
+      (request) => request.GroupRequestKey !== items.GroupRequestKey,
+    );
+    setGroupRequestItem(updatedGroupRequestItem);
+    if (updatedGroupRequestItem.length === 0) {
+      closeModal();
+    }
+  };
+
+  /**
+   * todo: group Request Accept Functionality
+   * @params ({item})
+   * */
+
+  const GroupReqAccept = (items) => {
+    set(push(ref(db, "GroupMembers/")), {
+      adminUid: items.AdminUid,
+      adminName: items.AdminName,
+      adminEmail: items.AdminEmail,
+      groupKey: items.GroupKey,
+      groupPhoto: items.GroupPhoto,
+      groupTegName: items.GroupTagName,
+      groupMemberName: items.whojoiningName,
+      groupMemberUid: items.whoJoiningUid,
+      groupMemberPhoto: items.whojoiningPhoto,
+      createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+    }).then(() => {
+      firetoastsuccess(`You accepted ${items.whojoiningName}`);
+      set(push(ref(db, "Notifications/")), {
+        notificationName: items.GroupName,
+        notificationPhoto: items.GroupPhoto,
+        notificationMsg: `${items.GroupName} Accepted your Request`,
+        createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+      }).then(() => {
+        remove(ref(db, "GroupRequest/" + items.GroupRequestKey), {});
+        // closeModal();
+      });
+    });
+  };
 
   return (
     <>
@@ -211,9 +275,9 @@ const MyGroups = () => {
                       {item.whojoiningPhoto ? (
                         <picture>
                           <img
+                            className="h-[70px] w-[70px] rounded-full object-cover shadow-lg"
                             src={item.whojoiningPhoto}
                             alt={item.whojoiningPhoto}
-                            className="s-full h-full rounded-full object-cover shadow-lg"
                           />
                         </picture>
                       ) : (
@@ -221,7 +285,7 @@ const MyGroups = () => {
                           <img
                             src={Friend}
                             alt={Friend}
-                            className="s-full h-full rounded-full object-cover shadow-lg"
+                            className="h-[70px] w-[70px] rounded-full object-cover shadow-lg"
                           />
                         </picture>
                       )}
@@ -249,7 +313,7 @@ const MyGroups = () => {
                           <img
                             src={item.GroupPhoto}
                             alt={item.GroupPhoto}
-                            className="s-full h-full rounded-full object-cover shadow-lg"
+                            className="h-[70px] w-[70px] rounded-full object-cover shadow-lg"
                           />
                         </picture>
                       ) : (
@@ -257,7 +321,7 @@ const MyGroups = () => {
                           <img
                             src={Friend}
                             alt={Friend}
-                            className="s-full h-full rounded-full object-cover shadow-lg"
+                            className="h-[70px] w-[70px] rounded-full object-cover shadow-lg"
                           />
                         </picture>
                       )}
@@ -276,14 +340,14 @@ const MyGroups = () => {
                       <div className="flex gap-x-3">
                         <button
                           className="relative inline-flex items-center rounded-lg bg-gradient-to-r from-[#3248c2] to-[#0633e7] px-5 py-2.5 text-center text-sm font-medium text-white"
-                          onClick={() => acceptGroupRequest(item)}
+                          onClick={() => GroupReqAccept(item)}
                         >
                           Accept
                         </button>
 
                         <button
                           className="relative inline-flex items-center rounded-lg bg-gradient-to-r from-[#ff5555] to-[#c75723] px-5 py-2.5 text-center text-sm font-medium text-white"
-                          onClick={() => handleJoinRequestRejected(item)}
+                          onClick={() => GroupReqReject(item)}
                         >
                           Reject
                         </button>
