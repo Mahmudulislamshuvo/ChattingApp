@@ -11,7 +11,7 @@ import {
 } from "firebase/database";
 import moment from "moment";
 import { getAuth } from "firebase/auth";
-
+import { firetoastsuccess } from "../../../Helper/Utils";
 const BlockUsers = () => {
   const db = getDatabase();
   const auth = getAuth();
@@ -61,6 +61,7 @@ const BlockUsers = () => {
     }).then(() => {
       const blockDbRef = ref(db, "Block/" + items.blockUserKey);
       remove(blockDbRef);
+      firetoastsuccess(`Unblock ${items.whoblockedName}`, "top-right");
     });
   };
   // const HandleUnblock = (items) => {

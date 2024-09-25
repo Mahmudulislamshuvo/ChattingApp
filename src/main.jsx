@@ -4,11 +4,13 @@ import App from "./App.jsx";
 import "./index.css";
 import { app, storage } from "../src/DatabaseConfigaration/FirebaseConnect.js";
 import "react-toastify/dist/ReactToastify.css";
+import { Provider } from "react-redux";
+import { store } from "./Features/Redux/Store/Store.js";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    <App />
+    <Provider store={store}>
+      <App />
+    </Provider>
   </StrictMode>,
 );
-
-console.log(app); // Add this to ensure the app is being initialized properly

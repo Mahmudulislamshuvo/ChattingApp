@@ -12,8 +12,11 @@ import {
 import moment from "moment";
 import { getAuth } from "firebase/auth";
 import { toast, Slide } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { friendAction } from "../../../Features/Redux/SliceFriends/FriendsSlice";
 
 const Friends = ({ ischat = false }) => {
+  const dispatch = useDispatch();
   const auth = getAuth();
   const db = getDatabase();
 
@@ -84,10 +87,18 @@ const Friends = ({ ischat = false }) => {
       });
   };
 
+  /**
+   * todo: handle send msg
+   *@param ({items})
+   * */
+  const HandleSendMsg = (items) => {
+    dispatch(friendAction(items));
+  };
+
   return (
     <div>
       <div
-        className={`${ischat ? `w-[427px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]` : `h-[451px] w-[344px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]`}`}
+        className={`${ischat ? `mt-3 w-[427px] rounded-xl shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]` : `h-[451px] w-[344px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]`}`}
       >
         <div className="pt-[13px]">
           <div className="flex w-[90] items-center justify-between text-wrap text-center">
@@ -112,7 +123,10 @@ const Friends = ({ ischat = false }) => {
             {/* Group Section 1 */}
             {friends.length > 0 ? (
               friends?.map((items) => (
-                <div className="flex items-center justify-between py-3.5 pl-[20px] pr-[20px] pt-[17px]">
+                <div
+                  className="flex items-center justify-between py-3.5 pl-[20px] pr-[20px] pt-[17px]"
+                  onClick={() => HandleSendMsg(items)}
+                >
                   <div className="flex items-center">
                     <div className="relative mr-[13px]">
                       <picture>
