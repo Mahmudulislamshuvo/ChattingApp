@@ -10,11 +10,17 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { Link, useLocation } from "react-router-dom";
-import { getAuth, onAuthStateChanged, updateProfile } from "firebase/auth";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import {
+  getAuth,
+  onAuthStateChanged,
+  updateProfile,
+  signOut,
+} from "firebase/auth";
 import { toast, Bounce } from "react-toastify";
 
 const HomeLeft = () => {
+  const navigate = useNavigate();
   const db = getDatabase();
   const auth = getAuth();
   const Location = useLocation();
@@ -83,6 +89,20 @@ const HomeLeft = () => {
       })
       .catch((err) => {
         console.log(err);
+      });
+  };
+
+  /**
+   * todo Handle Log out
+   * */
+  const HandleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        navigate("/login");
+        // Sign-out successful.
+      })
+      .catch((error) => {
+        console.log("Logout Error", error);
       });
   };
 
@@ -177,7 +197,10 @@ const HomeLeft = () => {
                     : "mt-[100px] cursor-pointer"
                 }
               >
-                <FaSignOutAlt className="animate-pulse text-[45px]" />
+                <FaSignOutAlt
+                  className="animate-pulse text-[45px]"
+                  onClick={HandleSignOut}
+                />
               </li>
             </ul>
           </div>

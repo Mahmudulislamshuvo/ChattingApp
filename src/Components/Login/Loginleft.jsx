@@ -167,7 +167,7 @@ const Loginleft = () => {
                 placeholder="Enter Your Email"
                 id="Email"
                 autoComplete="off"
-                className="w-3/4 border-b-2 border-[rgba(17,23,93,0.45)] pt-[15px]"
+                className="w-3/4 rounded-lg border-2 border-[rgba(17,23,93,0.45)] py-[15px]"
                 onChange={HandleInputFiel}
               />
               {Error.Emailerror && (
@@ -188,7 +188,7 @@ const Loginleft = () => {
                 placeholder="123456789@#$skhjgHJG"
                 id="Password"
                 autoComplete="off"
-                className="relative w-3/4 border-b-2 border-[rgba(17,23,93,0.45)] pt-[15px]"
+                className="relative w-3/4 rounded-lg border-2 border-[rgba(17,23,93,0.45)] py-[15px]"
                 onChange={HandleInputFiel}
               />
               {Error.PasswordError && (

@@ -164,8 +164,6 @@ const MyGroups = () => {
     });
   };
 
-  console.log(myGroup[0]);
-
   return (
     <>
       <div className="h-[462px] w-[344px] rounded-[20px] shadow-[0px_5px_7px_-2px_rgba(18,18,18,0.56)]">
