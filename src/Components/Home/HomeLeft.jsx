@@ -31,6 +31,8 @@ const HomeLeft = () => {
 
   let active = Location.pathname.split("/")[2];
   const [Usersinfo, setUsersinfo] = useState({});
+  const [notifications, setNotifications] = useState([]); // Store notifications
+  const [notificationCount, setNotificationCount] = useState(0); // Unread count
 
   // auth provider userinfo
   useEffect(() => {
@@ -106,6 +108,36 @@ const HomeLeft = () => {
       });
   };
 
+  // /**
+  //  * todo: handle Notification for get lenth
+  //  * */
+  // useEffect(() => {
+  //   const NotificatiosDbRef = ref(db, "Notifications/");
+
+  //   onValue(NotificatiosDbRef, (snapshot) => {
+  //     const allNotifications = [];
+  //     snapshot.forEach((child) => {
+  //       const notification = { id: child.key, ...child.val() };
+  //       allNotifications.push(notification);
+  //     });
+  //     // Filter unread notifications
+  //     const unreadCount = allNotifications.filter((n) => !n.read).length;
+  //     // Update the states
+  //     setNotifications(allNotifications); // Store all notifications
+  //     setNotificationCount(unreadCount); // Update unread count
+  //   });
+  // }, [db]);
+
+  // const markAllAsRead = () => {
+  //   const NotificatiosDbRef = ref(db, "Notifications/");
+  //   items.forEach((items) => {
+  //     if (!items.read) {
+  //       update(ref(db, `Notifications/${items.id}`), { read: true });
+  //     }
+  //   });
+  //   setNotificationCount(0); // Reset unread count
+  // };
+
   return (
     <>
       <div className="mr-[63px] flex">
@@ -145,7 +177,7 @@ const HomeLeft = () => {
             </h3>
           </div>
           <div className=" ">
-            <ul className="mt-[97px] flex flex-col items-center gap-y-[76px] text-[45px]">
+            <ul className="mt-[50px] flex flex-col items-center gap-y-[76px] text-[45px]">
               <li
                 className={
                   active === "contents"

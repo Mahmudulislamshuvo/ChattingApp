@@ -119,6 +119,7 @@ const MyGroups = () => {
         notificationPhoto: items.GroupPhoto,
         notificationMsg: `${items.GroupName} Rejected your Request`,
         createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+        groupMemberUid: items.whoJoiningUid,
       }).then(() => {
         firetoasterror(`Decline ${items.whojoiningName} Request`);
       });
@@ -155,6 +156,7 @@ const MyGroups = () => {
       set(push(ref(db, "Notifications/")), {
         notificationName: items.GroupName,
         notificationPhoto: items.GroupPhoto,
+        groupMemberUid: items.whoJoiningUid,
         notificationMsg: `${items.GroupName} Accepted your Request`,
         createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
       }).then(() => {

@@ -201,6 +201,7 @@ const GroupList = () => {
    * @params ({items})
    * */
   const HandleJoin = (items) => {
+    console.log(items);
     set(push(ref(db, "GroupRequest/")), {
       ...items,
       whoJoiningUid: auth.currentUser.uid,
@@ -217,6 +218,7 @@ const GroupList = () => {
           notificationPhoto: items.GroupPhoto,
           notificationMsg: `You Requested to join ${items.GroupName}`,
           createdDate: moment().format("MM/DD/YYYY, h:mm:ss a"),
+          reciverUid: items.AdminUid,
         });
       });
   };
