@@ -12,6 +12,9 @@ import { getDatabase, ref, set, push, onValue } from "firebase/database";
 import { getAuth } from "firebase/auth";
 import moment from "moment";
 import EmojiPicker from "emoji-picker-react";
+import ReactDOM from "react-dom";
+import Modal from "react-modal";
+import { Imgupload } from "../Ulitls/Imgupload.js";
 
 const ChatPage = () => {
   const db = getDatabase();
@@ -21,6 +24,29 @@ const ChatPage = () => {
   const [textmsg, settextmsg] = useState("");
   const [singleMsg, setsingleMsg] = useState([]);
   const [emoji, setemoji] = useState(false);
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const [imgfiles, setimgfiles] = useState(null);
+
+  // Modal things here=============
+  const customStyles = {
+    content: {
+      top: "50%",
+      left: "50%",
+      right: "auto",
+      bottom: "auto",
+      marginRight: "-50%",
+      transform: "translate(-50%, -50%)",
+      width: "30%",
+    },
+  };
+  function openModal() {
+    setIsOpen(true);
+  }
+  function closeModal() {
+    setIsOpen(false);
+  }
+
+  // Modal things here=============end
 
   /**
    * todo: avoid conflit Rename data got from Redux
@@ -93,6 +119,24 @@ const ChatPage = () => {
     settextmsg((prevText) => {
       return prevText + emojiObject.emoji;
     }); // Append emoji to text
+  };
+
+  const HandleSendPic = () => {
+    openModal();
+  };
+
+  const onchangeInput = (e) => {
+    const files = Array.from(e.target.files);
+    setimgfiles(files[0]);
+  };
+
+  const uploadImge = () => {
+    if (imgfiles) {
+      Imgupload(imgfiles); // Pass the selected file
+      closeModal();
+    } else {
+      console.log("No file selected for upload");
+    }
   };
 
   return (
@@ -191,10 +235,10 @@ const ChatPage = () => {
               </div>
               <div className="absolute right-4 top-1/2 flex -translate-y-1/2 transform items-center justify-center gap-x-3 text-[30px]">
                 <span onClick={() => setemoji(!emoji)}>
-                  <MdOutlineEmojiEmotions />
+                  <MdOutlineEmojiEmotions className="cursor-pointer" />
                 </span>
-                <span>
-                  <BsCamera />
+                <span onClick={HandleSendPic}>
+                  <BsCamera className="cursor-pointer" />
                 </span>
               </div>
             </div>
@@ -203,10 +247,41 @@ const ChatPage = () => {
               className="ml-4 rounded-xl bg-ThemeColor px-3 py-2 text-[30px] text-white"
               onClick={HandleSigleText}
             >
-              <IoIosSend />
+              <IoIosSend className="cursor-pointer" />
             </div>
           </div>
         </div>
+      </div>
+      <div>
+        <button onClick={openModal}>Open Modal</button>
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <button
+            onClick={closeModal}
+            className="rounded-md bg-red-600 px-2 py-[2px]"
+          >
+            close
+          </button>
+          <div className="flex flex-col items-center justify-between">
+            <div className="my-10">
+              <input
+                type="file"
+                className="rounded-lg"
+                onChange={onchangeInput}
+              />
+            </div>
+            <button
+              className="w-full rounded-lg bg-ThemeColor px-2 py-1 font-Poppins font-bold text-white"
+              onClick={uploadImge}
+            >
+              Upload
+            </button>
+          </div>
+        </Modal>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ const EditProfileName = ({
   OnUserNameInput,
 }) => {
   const [IsFocus, setIsFocus] = useState(false);
+  const [loading, setloading] = useState(false);
 
   /**
    * todo: Input feild clear on focus
@@ -14,6 +15,7 @@ const EditProfileName = ({
   const HandleFocus = () => {
     setIsFocus(true);
   };
+  console.log("Isfocus", IsFocus);
 
   const auth = getAuth();
   return (
@@ -41,7 +43,7 @@ const EditProfileName = ({
           />
           <input
             type="submit"
-            className="m-auto block w-1/2 cursor-pointer rounded-md bg-ThemeColor py-2 font-semibold text-white"
+            className="relative m-auto block w-1/2 cursor-pointer rounded-md bg-ThemeColor py-2 font-semibold text-white"
             onClick={OnUpdateUserProfile}
           />
         </form>

@@ -1,9 +1,5 @@
 import React, { useState, createRef, useEffect } from "react";
 import HomeContentOne from "../../../assets/Home/one.png";
-import HomeContentTwo from "../../../assets/Home/two.png";
-import HomeContentThree from "../../../assets/Home/three.png";
-import HomeContentFour from "../../../assets/Home/one.png";
-import HomeContentFive from "../../../assets/Home/two.png";
 import { IoClose } from "react-icons/io5";
 import ReactDOM from "react-dom";
 import Modal from "react-modal";

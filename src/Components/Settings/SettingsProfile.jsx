@@ -1,14 +1,25 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import frineds from "../../assets/Home/Userslist/userlist1.jpg";
 import { getAuth } from "firebase/auth";
+import { getDatabase, ref, onValue, push, update } from "firebase/database";
 
-const SettingsProfile = ({ onusersInfo }) => {
-  console.log(onusersInfo);
-
+const SettingsProfile = () => {
   const auth = getAuth();
+  const db = getDatabase();
 
-  const UserPhoto = auth.currentUser.photoURL;
-  const UserName = auth.currentUser.displayName;
+  const [currentUser, setcurrentUser] = useState({});
+  console.log(currentUser);
+
+  useEffect(() => {
+    const starCountRef = ref(db, "users/");
+    onValue(starCountRef, (snapshot) => {
+      snapshot.forEach((items) => {
+        if (auth.currentUser.uid === items.val().uid) {
+          setcurrentUser({ ...items.val(), userKey: items.key });
+        }
+      });
+    });
+  }, []);
 
   return (
     <div>
@@ -16,25 +27,17 @@ const SettingsProfile = ({ onusersInfo }) => {
         <div>
           <picture>
             <img
-              src={
-                onusersInfo.profile_picture
-                  ? onusersInfo.profile_picture
-                  : UserPhoto
-              }
-              alt={
-                onusersInfo.profile_picture
-                  ? onusersInfo.profile_picture
-                  : UserPhoto
-              }
+              src={currentUser.profile_picture}
+              alt={currentUser.profile_picture}
               className="h-[100px] w-[100px] rounded-full border-2 border-white"
             />
           </picture>
         </div>
         <div className="">
           <h1 className="font-Poppins text-[20px] font-semibold text-black">
-            {onusersInfo.displayName ? onusersInfo.displayName : UserName}
+            {currentUser.displayName}
           </h1>
-          <p className="font-Poppins text-[15px]">{auth.currentUser.email}</p>
+          <p className="font-Poppins text-[15px]">{currentUser.email}</p>
         </div>
       </div>
       <hr className="mt-5" />

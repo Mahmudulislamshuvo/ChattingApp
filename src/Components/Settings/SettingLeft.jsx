@@ -7,7 +7,8 @@ import { IoHelpCircleOutline } from "react-icons/io5";
 import SettingsModal from "./SettingsCommon/SettingsModal";
 import EditProfileName from "./UpatingCompo/EditProfileName";
 import { getDatabase, ref, onValue, push, update } from "firebase/database";
-import { getAuth } from "firebase/auth";
+import { getAuth, updateProfile } from "firebase/auth";
+import EditPhoto from "./UpatingCompo/EditPhoto";
 
 const SettingLeft = () => {
   const auth = getAuth();
@@ -16,9 +17,11 @@ const SettingLeft = () => {
   const [modalIsOpen, setIsOpen] = useState(false);
   const [UserNameInput, setUserNameInput] = useState("");
   const [currentUser, setcurrentUser] = useState({});
+  const [updatepp, setupdatepp] = useState("");
 
   // Modal functions
-  function openModal() {
+  function openModal(UpdateProfilePic) {
+    setupdatepp(UpdateProfilePic);
     setIsOpen(true);
     setUserNameInput("");
   }
@@ -55,6 +58,10 @@ const SettingLeft = () => {
         await update(CurrentUserDbRef, {
           displayName: UserNameInput,
         });
+        await updateProfile(auth.currentUser, {
+          displayName: UserNameInput,
+        });
+        await auth.currentUser.reload();
         console.log("UserName updated successfully!");
       }
     } catch (error) {
@@ -77,10 +84,10 @@ const SettingLeft = () => {
       <div className="h-screen w-[575px] rounded-lg p-5 shadow-lg">
         <span className="text-[20px] font-semibold">Profile Settings</span>
         <div>
-          <SettingsProfile onusersInfo={currentUser} />
+          <SettingsProfile />
         </div>
         <div className="flex flex-col gap-y-10 p-14">
-          <div onClick={openModal}>
+          <div onClick={() => openModal("")}>
             <div className="flex cursor-pointer items-center gap-x-4">
               <span className="text-[23px]">
                 <BiSolidEditAlt />
@@ -98,7 +105,7 @@ const SettingLeft = () => {
               </p>
             </div>
           </div>
-          <div>
+          <div onClick={() => openModal("UpdateProfilePic")}>
             <div className="flex cursor-pointer items-center gap-x-4">
               <span className="text-[23px]">
                 <MdAddPhotoAlternate />
@@ -116,11 +123,15 @@ const SettingLeft = () => {
           </div>
         </div>
         <SettingsModal onModal={modalIsOpen} offcloseModal={closeModal}>
-          <EditProfileName
-            OnUpdateUserProfile={HandleUserNameChange}
-            OnUpdateUserInfo={UpdateUserInfo}
-            OnUserNameInput={UserNameInput}
-          />
+          {updatepp !== "" ? (
+            <EditPhoto />
+          ) : (
+            <EditProfileName
+              OnUpdateUserProfile={HandleUserNameChange}
+              OnUpdateUserInfo={UpdateUserInfo}
+              OnUserNameInput={UserNameInput}
+            />
+          )}
         </SettingsModal>
       </div>
     </>
