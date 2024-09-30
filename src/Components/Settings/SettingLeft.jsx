@@ -9,15 +9,24 @@ import EditProfileName from "./UpatingCompo/EditProfileName";
 import { getDatabase, ref, onValue, push, update } from "firebase/database";
 import { getAuth, updateProfile } from "firebase/auth";
 import EditPhoto from "./UpatingCompo/EditPhoto";
+import {
+  getStorage,
+  ref as stgRef,
+  uploadBytesResumable,
+  getDownloadURL,
+} from "firebase/storage";
+import { v4 as uuidv4 } from "uuid";
 
 const SettingLeft = () => {
   const auth = getAuth();
   const db = getDatabase();
+  const storage = getStorage();
 
   const [modalIsOpen, setIsOpen] = useState(false);
   const [UserNameInput, setUserNameInput] = useState("");
   const [currentUser, setcurrentUser] = useState({});
   const [updatepp, setupdatepp] = useState("");
+  const [progressbar, setprogressbar] = useState(0);
 
   // Modal functions
   function openModal(UpdateProfilePic) {
@@ -79,6 +88,42 @@ const SettingLeft = () => {
     setUserNameInput(e.target.value);
   };
 
+  /**
+   * todo: Handle Profile Pic change fictionality Implementation
+   *@perams ({})
+   * */
+  const HandleProfilePicChange = (updatedImg) => {
+    if (!updatedImg) {
+      alert("Please upload an image before submitting.");
+      return;
+    }
+    const storageRef = stgRef(storage, `UpadtedProfilePic/Image${uuidv4()}`);
+    const uploadTask = uploadBytesResumable(storageRef, updatedImg);
+    // Listen for state changes, errors, and completion of the upload.
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        let progressbar =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        setprogressbar(progressbar);
+      },
+      (error) => {
+        console.log("Error", error.code);
+      },
+      () => {
+        setprogressbar("");
+        closeModal();
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          const UsersRef = ref(db, `users/${currentUser.userKey}`);
+          update(UsersRef, {
+            profile_picture: downloadURL,
+          });
+        });
+      },
+    );
+  };
+
   return (
     <>
       <div className="h-screen w-[575px] rounded-lg p-5 shadow-lg">
@@ -124,7 +169,10 @@ const SettingLeft = () => {
         </div>
         <SettingsModal onModal={modalIsOpen} offcloseModal={closeModal}>
           {updatepp !== "" ? (
-            <EditPhoto />
+            <EditPhoto
+              onHandleProfilePicChange={HandleProfilePicChange}
+              onprogressbar={progressbar}
+            />
           ) : (
             <EditProfileName
               OnUpdateUserProfile={HandleUserNameChange}

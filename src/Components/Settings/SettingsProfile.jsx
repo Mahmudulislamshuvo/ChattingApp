@@ -8,7 +8,6 @@ const SettingsProfile = () => {
   const db = getDatabase();
 
   const [currentUser, setcurrentUser] = useState({});
-  console.log(currentUser);
 
   useEffect(() => {
     const starCountRef = ref(db, "users/");

@@ -97,14 +97,14 @@ const HomeLeft = () => {
   /**
    * todo Handle Log out
    * */
-  const HandleSignOut = () => {
-    signOut(auth)
+  const HandleSignOut = async () => {
+    await signOut(auth)
       .then(() => {
         navigate("/login");
         // Sign-out successful.
       })
       .catch((error) => {
-        console.log("Logout Error", error);
+        console.log("Logout Error", error.code);
       });
   };
 
@@ -153,7 +153,7 @@ const HomeLeft = () => {
                   <img
                     src={Usersinfo.profile_picture}
                     alt="Profile"
-                    className="rounded-full"
+                    className="h-[100px] w-[100px] rounded-full"
                   />
                 ) : (
                   <FaCircleUser className="h-full w-full text-center text-[40px]" />
